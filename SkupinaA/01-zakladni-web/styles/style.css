@@ -17,6 +17,14 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 
 }
+h1 {
+    font-size: 36px;
+    margin: unset;
+}
+
+h1,h2 {
+    color: brown;
+}
 
 
 p {
@@ -24,4 +32,69 @@ p {
 
    /* velikost pisma */
    font-size: 18px;
+   margin: unset;
+}
+
+header, footer {
+    background-color: aqua;
+
+    /* 1rem vetsinou 16 pixelu */
+    /* padding: 0.5rem; */
+    padding: 0.5rem 1rem;
+    /* padding: 0.5rem 1rem 1.5rem 2rem; */
+}
+
+footer p {
+    margin: unset;
+}
+
+
+
+.page-wrapper {
+    width: 90%;
+    /* zarovnani na stred */
+    margin: 0 auto;
+}
+
+nav ul {
+    display: flex;
+    list-style-type: none;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    padding: 0;
+}
+
+nav li {
+  /* flex-grow: 1; */
+  /* flex-shrink: 1; */
+  /* flex-basis: 100px; */
+  /* to same jako predchozi tri */
+  flex: 1 1 100px;
+}
+
+nav a {
+    display: block;
+    background-color: blanchedalmond;
+    color: azure;
+    text-decoration: none;
+    padding: 0.5rem;
+    border-radius: 10px;
+    white-space: nowrap;
+}
+
+.grid-container {
+    display: grid;
+    /* grid-template-columns: auto auto auto auto; */
+    /* grid-template-columns: 1fr 4fr 5fr; */
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+}
+
+.card {
+    background-color: rgb(175, 138, 194);
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 20px 40px;
+    border: 2px solid orange;
+    
 }
