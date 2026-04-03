@@ -20,6 +20,37 @@ class BookController {
         require_once '../app/views/books/books_list.php';
     }
 
+    // Zobrazení detailu jedné konkrétní knihy
+    public function show($id = null) {
+        // 1. Kontrola, zda bylo v URL předáno ID
+        if (!$id) {
+            $this->addErrorMessage('Nebylo zadáno ID knihy pro zobrazení detailu.');
+            header('Location: ' . BASE_URL . '/index.php');
+            exit;
+        }
+
+        // 2. Načtení potřebných tříd a spojení s databází
+        require_once '../app/models/Database.php';
+        require_once '../app/models/Book.php';
+
+        $database = new Database();
+        $db = $database->getConnection();
+
+        // 3. Získání dat o knize pomocí modelu
+        $bookModel = new Book($db);
+        $book = $bookModel->getById($id);
+
+        // 4. Kontrola, zda kniha existuje
+        if (!$book) {
+            $this->addErrorMessage('Požadovaná kniha nebyla nalezena.');
+            header('Location: ' . BASE_URL . '/index.php');
+            exit;
+        }
+
+        // 5. Načtení pohledu pro detail knihy
+        require_once '../app/views/books/book_show.php';
+    }
+
 
     // 1. Zobrazení formuláře pro přidání nové knihy
     public function create() {
