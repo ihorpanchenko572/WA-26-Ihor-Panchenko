@@ -1,33 +1,4 @@
-<!DOCTYPE html>
-<html lang="cs" class="h-full">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <title>Knihovna - Seznam knih</title>
-</head>
-<body class="bg-orange-50 text-slate-800 min-h-screen font-sans">
-
-    <header class="bg-gradient-to-b from-orange-400 to-orange-600 border-b border-orange-700 shadow-xl">
-        <div class="container mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center">
-            <h1 class="text-2xl font-bold tracking-tight text-white uppercase italic">
-                Aplikace <span class="text-orange-100">Knihovna</span>
-            </h1>
-            
-            <nav class="mt-4 md:mt-0">
-                <ul class="flex space-x-6">
-                    <li>
-                        <a href="<?= BASE_URL ?>/index.php" class="text-white hover:text-orange-100 transition-colors font-medium">Seznam knih</a>
-                    </li>
-                    <li>
-                        <a href="<?= BASE_URL ?>/index.php?url=book/create" class="bg-orange-700 hover:bg-orange-800 text-white px-4 py-2 rounded-md transition-all shadow-inner border border-orange-800">
-                            + Přidat knihu
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+ <?php require_once '../app/views/layout/header.php'; ?>
 
     <main class="container mx-auto px-6 py-10">
         
@@ -98,9 +69,4 @@
         </div>
     </main>
 
-    <footer class="mt-auto border-t border-orange-200 py-8 text-center">
-        <p class="text-orange-800/40 text-sm tracking-widest uppercase italic">&copy; WA 2026 - Výukový projekt v pomerančovém stylu</p>
-    </footer>
-
-</body>
-</html>
+     <?php require_once '../app/views/layout/footer.php'; ?>
