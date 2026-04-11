@@ -187,8 +187,7 @@ class BookController {
     }
 
     // 5. Zpracování dat odeslaných z editačního formuláře
-    public function update($id = null) {
-        // Zabezpečení: Je k dispozici ID a byl odeslán formulář?
+public function update($id = null) {
         if (!$id) {
             $this->addErrorMessage('Nebylo zadáno ID knihy k aktualizaci.');
             header('Location: ' . BASE_URL . '/index.php');
@@ -197,54 +196,48 @@ class BookController {
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
-            // 1. Získání a očištění textových dat
             $title = htmlspecialchars($_POST['title'] ?? '');
             $author = htmlspecialchars($_POST['author'] ?? '');
             $isbn = htmlspecialchars($_POST['isbn'] ?? '');
             $category = htmlspecialchars($_POST['category'] ?? '');
             $subcategory = htmlspecialchars($_POST['subcategory'] ?? '');
-            
-            // Přetypování číselných hodnot
             $year = (int)($_POST['year'] ?? 0);
             $price = (float)($_POST['price'] ?? 0);
-            
             $link = htmlspecialchars($_POST['link'] ?? '');
             $description = htmlspecialchars($_POST['description'] ?? '');
 
-            // Prozatímní zástupce pro obrázky
-            //$uploadedImages = []; 
-
-            // ZDE JE ZMĚNA: Zavolání metody, která zpracuje soubory v $_FILES
-            // Vrátí nám hezké pole s novými názvy (např. ['book_123.jpg', 'book_456.png'])
+            // 1. Zpracování nových obrázků
             $uploadedImages = $this->processImageUploads(); 
 
-            // 2. Komunikace s databází a modelem
             require_once '../app/models/Database.php';
             require_once '../app/models/Book.php';
-
             $database = new Database();
             $db = $database->getConnection();
-
-            // 3. Volání updatu nad modelem
             $bookModel = new Book($db);
+
+            // --- LOGIKA PRO ZACHOVÁNÍ OBRÁZKŮ ---
+            // Pokud uživatel nenahrál ŽÁDNÉ nové obrázky, zachováme ty původní
+            if (empty($uploadedImages)) {
+                $currentBook = $bookModel->getById($id);
+                // Dekódujeme JSON z databáze zpět na pole (pokud tam nic není, dáme prázdné pole)
+                $uploadedImages = json_decode($currentBook['images'] ?? '[]', true);
+            }
+            // ------------------------------------
+
             $isUpdated = $bookModel->update(
                 $id, $title, $author, $category, $subcategory, 
                 $year, $price, $isbn, $description, $link, $uploadedImages
             );
 
-            // 4. Vyhodnocení výsledku a přesměrování
             if ($isUpdated) {
-                // Vyvolání zelené notifikace o úspěchu
                 $this->addSuccessMessage('Kniha byla úspěšně upravena.');
                 header('Location: ' . BASE_URL . '/index.php');
                 exit;
             } else {
-                // Vyvolání červené chybové notifikace
                 $this->addErrorMessage('Nastala chyba. Změny se nepodařilo uložit.');
             }
             
         } else {
-            // Pokud by někdo zkusil přistoupit na URL napřímo bez odeslání formuláře (žlutá notifikace)
             $this->addNoticeMessage('Pro úpravu knihy je nutné odeslat formulář.');
         }
     }
