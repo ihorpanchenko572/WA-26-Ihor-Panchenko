@@ -5,27 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <title>IRON LOG | NO PAIN NO GAIN</title>
+    <style>
+        /* Jemná animace pro notifikace */
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .animate-slide-in {
+            animation: slideIn 0.5s ease-out forwards;
+        }
+    </style>
 </head>
 <body class="bg-[#080808] text-zinc-100 min-h-screen font-sans flex flex-col">
 
     <header class="bg-black border-b-2 border-lime-500 shadow-[0_10px_30px_rgba(163,230,53,0.1)] relative z-50">
-        <div class="container mx-auto px-6 py-5 flex flex-col md:flex-row justify-between items-center">
+        <div class="container mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center">
             
-            <a href="<?= BASE_URL ?>/index.php" class="group">
-                <h1 class="text-4xl font-black italic tracking-tighter uppercase transition-transform group-hover:scale-105">
-                    <span class="text-white">IRON</span><span class="text-lime-500 group-hover:drop-shadow-[0_0_10px_#a3e635]">LOG</span>
-                </h1>
+            <a href="<?= BASE_URL ?>/index.php" class="group flex items-center mb-4 md:mb-0">
+                <img src="<?= BASE_URL ?>/images/logo.png" 
+                     alt="IRON LOG Logo" 
+                     class="h-12 md:h-14 w-auto transition-transform duration-300 group-hover:scale-110 group-hover:drop-shadow-[0_0_15px_rgba(163,230,53,0.5)]">
             </a>
             
-            <nav class="mt-6 md:mt-0">
+            <nav>
                 <ul class="flex space-x-8 items-center font-black tracking-widest text-[11px] uppercase">
                     <li>
-                        <a href="<?= BASE_URL ?>/index.php" class="hover:text-lime-500 transition-colors">Historie</a>
+                        <a href="<?= BASE_URL ?>/index.php" class="text-zinc-400 hover:text-white transition-colors duration-300">
+                            Historie
+                        </a>
                     </li>
                     <li>
                         <a href="<?= BASE_URL ?>/index.php?url=workout/create" 
-                           class="bg-lime-500 text-black px-6 py-3 transform -skew-x-12 hover:bg-white transition-all shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] inline-block">
-                            + Přidat výkon
+                           class="bg-lime-500 text-black px-8 py-3 transform -skew-x-12 hover:bg-white transition-all duration-300 shadow-[5px_5px_0px_0px_rgba(255,255,255,0.2)] active:translate-y-1 inline-block">
+                            + PŘIDAT VÝKON
                         </a>
                     </li>
                 </ul>
@@ -35,14 +47,21 @@
 
     <div class="container mx-auto px-6 mt-6">
         <?php if (isset($_SESSION['messages']) && !empty($_SESSION['messages'])): ?>
-            <?php foreach ($_SESSION['messages'] as $type => $messages): ?>
-                <?php foreach ($messages as $message): ?>
-                    <div class="bg-lime-500 text-black font-black p-4 mb-4 transform -skew-x-3 border-l-8 border-white shadow-lg animate-pulse">
-                        <span class="uppercase tracking-tighter italic font-black text-lg">System:</span> 
-                        <?= htmlspecialchars($message) ?>
-                    </div>
+            <div class="space-y-3">
+                <?php foreach ($_SESSION['messages'] as $type => $messages): ?>
+                    <?php 
+                        // Barvy podle typu zprávy (vždy v agresivním stylu)
+                        $bgColor = ($type === 'success') ? 'bg-lime-500' : (($type === 'error') ? 'bg-red-600' : 'bg-zinc-700');
+                        $textColor = ($type === 'success') ? 'text-black' : 'text-white';
+                    ?>
+                    <?php foreach ($messages as $message): ?>
+                        <div class="<?= $bgColor ?> <?= $textColor ?> font-black p-4 transform -skew-x-3 border-l-8 border-white shadow-xl animate-slide-in">
+                            <span class="uppercase italic tracking-tighter text-lg mr-2">!</span> 
+                            <?= htmlspecialchars($message) ?>
+                        </div>
+                    <?php endforeach; ?>
                 <?php endforeach; ?>
-            <?php endforeach; ?>
-            <?php unset($_SESSION['messages']); ?>
+                <?php unset($_SESSION['messages']); ?>
+            </div>
         <?php endif; ?>
     </div>
