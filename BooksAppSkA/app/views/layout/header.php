@@ -15,38 +15,42 @@
             </h1>
             
                       <nav class="mt-4 md:mt-0">
-                <ul class="flex items-center space-x-6">
-                    <li>
-                        <a href="<?= BASE_URL ?>/index.php" class="hover:text-blue-400 transition-colors font-medium">Seznam knih</a>
-                    </li>
+    <ul class="flex items-center space-x-6">
+        <li>
+            <a href="<?= BASE_URL ?>/index.php" class="text-slate-200 hover:text-orange-400 transition-colors font-semibold tracking-tight">
+                Seznam knih
+            </a>
+        </li>
 
-                    <?php if (isset($_SESSION['user_id'])): ?>
-                        <li>
-                            <a href="<?= BASE_URL ?>/index.php?url=book/create" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-md transition-all shadow-inner border border-blue-500">
-                                + Přidat knihu
-                            </a>
-                        </li>
-                        <li class="text-slate-400 text-sm">
-                            Ahoj, <span class="text-white font-semibold tracking-wide"><?= htmlspecialchars($_SESSION['user_name']) ?></span>
-                        </li>
-                        <li>
-                            <a href="<?= BASE_URL ?>/index.php?url=auth/logout" class="text-rose-400 hover:text-white transition-colors text-sm uppercase tracking-wider font-medium">
-                                Odhlásit
-                            </a>
-                        </li>
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <li>
+                <a href="<?= BASE_URL ?>/index.php?url=book/create" class="bg-orange-600 hover:bg-orange-500 text-white px-4 py-2 rounded shadow-md transition-all border border-orange-700 font-bold text-sm">
+                    + Přidat knihu
+                </a>
+            </li>
+            <li class="text-slate-400 text-sm hidden sm:block">
+                Ahoj, <span class="text-orange-400 font-bold italic"><?= htmlspecialchars($_SESSION['user_name']) ?></span>
+            </li>
+            <li>
+                <a href="<?= BASE_URL ?>/index.php?url=auth/logout" class="text-slate-400 hover:text-orange-600 transition-colors text-xs uppercase tracking-widest font-bold">
+                    Odhlásit
+                </a>
+            </li> 
 
-                    <?php else: ?>
-                        <li>
-                            <a href="<?= BASE_URL ?>/index.php?url=auth/login" class="hover:text-blue-400 transition-colors font-medium">Přihlásit</a>
-                        </li>
-                        <li>
-                            <a href="<?= BASE_URL ?>/index.php?url=auth/register" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-md transition-all shadow-inner border border-slate-600">
-                                Registrace
-                            </a>
-                        </li>
-                    <?php endif; ?>
-                </ul>
-            </nav>
+        <?php else: ?>
+            <li>
+                <a href="<?= BASE_URL ?>/index.php?url=auth/login" class="text-slate-200 hover:text-orange-400 transition-colors font-semibold">
+                    Přihlásit
+                </a>
+            </li>
+            <li>
+                <a href="<?= BASE_URL ?>/index.php?url=auth/register" class="bg-slate-800 hover:bg-slate-700 text-orange-400 px-4 py-2 rounded border border-slate-700 transition-all font-bold text-sm shadow-md">
+                    Registrace
+                </a>
+            </li>
+        <?php endif; ?>
+    </ul>
+</nav>
         </div>
     </header>
 
