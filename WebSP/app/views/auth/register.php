@@ -34,13 +34,19 @@
 
                     <div class="md:col-span-1">
                         <label for="password" class="block text-[10px] font-black uppercase text-zinc-500 mb-2 italic">Heslo <span class="text-lime-500">*</span></label>
-                        <input type="password" id="password" name="password" required 
+                        <input type="password" id="password" name="password" required minlength="8"
                                class="w-full bg-black border-2 border-zinc-800 focus:border-lime-500 p-3 text-white outline-none transition-all">
+                        <div class="mt-2 flex items-start space-x-2">
+                            <span class="text-lime-500 font-black text-xs italic">!</span>
+                            <p class="text-[9px] text-zinc-500 uppercase font-bold leading-tight tracking-wider">
+                                MINIMÁLNĚ <span class="text-white">8 ZNAKŮ</span> A <span class="text-white">JEDNO VELKÉ PÍSMENO</span> PRO MAXIMÁLNÍ ZABEZPEČENÍ.
+                            </p>
+                        </div>
                     </div>
 
                     <div class="md:col-span-1">
                         <label for="password_confirm" class="block text-[10px] font-black uppercase text-zinc-500 mb-2 italic">Potvrzení hesla <span class="text-lime-500">*</span></label>
-                        <input type="password" id="password_confirm" name="password_confirm" required 
+                        <input type="password" id="password_confirm" name="password_confirm" required minlength="8"
                                class="w-full bg-black border-2 border-zinc-800 focus:border-lime-500 p-3 text-white outline-none transition-all">
                     </div>
 

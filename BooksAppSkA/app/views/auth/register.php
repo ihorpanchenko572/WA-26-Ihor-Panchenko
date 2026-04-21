@@ -29,13 +29,16 @@
 
                     <div>
                         <label for="password" class="block text-[11px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Heslo <span class="text-orange-500">*</span></label>
-                        <input type="password" id="password" name="password" required 
+                        <input type="password" id="password" name="password" required minlength="8"
                                class="w-full bg-slate-800 border border-slate-700 rounded-md px-4 py-2 text-slate-200 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all">
+                        <p class="text-[10px] text-slate-500 mt-1 italic">
+                            Minimálně <span class="text-orange-400 font-bold">8 znaků</span> a <span class="text-orange-400 font-bold">jedno velké písmeno</span>.
+                        </p>
                     </div>
 
                     <div>
                         <label for="password_confirm" class="block text-[11px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Potvrzení hesla <span class="text-orange-500">*</span></label>
-                        <input type="password" id="password_confirm" name="password_confirm" required 
+                        <input type="password" id="password_confirm" name="password_confirm" required minlength="8"
                                class="w-full bg-slate-800 border border-slate-700 rounded-md px-4 py-2 text-slate-200 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all">
                     </div>
 
