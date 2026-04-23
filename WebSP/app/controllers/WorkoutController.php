@@ -44,12 +44,11 @@ class WorkoutController {
 
     // 3. FORMULÁŘ PRO NOVÝ ZÁPIS
     public function create() {
-        // !!! ZMĚNA: Autorizace: Pokud uživatel není přihlášen, nemá tu co dělat
-    if (!isset($_SESSION['user_id'])) {
-        $this->addErrorMessage('Pro přidání výkonu se musíte nejprve přihlásit.');
-        header('Location: ' . BASE_URL . '/index.php?url=auth/login');
-        exit;
-    }
+        if (!isset($_SESSION['user_id'])) {
+            $this->addErrorMessage('PRO PŘIDÁNÍ VÝKONU SE MUSÍTE NEJPRVE PŘIHLÁSIT.');
+            header('Location: ' . BASE_URL . '/index.php?url=auth/login');
+            exit;
+        }
         require_once '../app/views/workouts/workout_create.php';
     }
 
@@ -57,14 +56,13 @@ class WorkoutController {
     public function store() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-        // !!! ZMĚNA: ZDE PŘIDÁME KONTROLU PŘIHLÁŠENÍ ---
             if (!isset($_SESSION['user_id'])) {
-                $this->addErrorMessage('Pro uložení výkonu musíte být přihlášeni.');
+                $this->addErrorMessage('PRO ULOŽENÍ VÝKONU MUSÍTE BÝT PŘIHLÁŠENI.');
                 header('Location: ' . BASE_URL . '/index.php?url=auth/login');
                 exit;
             }
+            
             $userId = $_SESSION['user_id'];
-            // ---------------------------------------
             
             $exercise = htmlspecialchars($_POST['exercise_name'] ?? '');
             $muscle = htmlspecialchars($_POST['muscle_group'] ?? '');
@@ -74,7 +72,6 @@ class WorkoutController {
             $date = $_POST['workout_date'] ?? date('Y-m-d');
             $description = htmlspecialchars($_POST['description'] ?? '');
 
-            // Zpracování obrázků
             $uploadedImages = $this->processImageUploads(); 
 
             require_once '../app/models/Database.php';
@@ -98,11 +95,8 @@ class WorkoutController {
 
     // 5. FORMULÁŘ PRO EDITACI
     public function edit($id = null) {
-
-         // 🔒 !!! ZMĚNA: Kontrola, zda je uživatel přihlášen. 
-        // Pokud není, nepustíme ho ani k načítání dat z DB.
         if (!isset($_SESSION['user_id'])) {
-            $this->addErrorMessage('Pro úpravu výkonu se musíte nejprve přihlásit.');
+            $this->addErrorMessage('PRO ÚPRAVU VÝKONU SE MUSÍTE NEJPRVE PŘIHLÁSIT.');
             header('Location: ' . BASE_URL . '/index.php?url=auth/login');
             exit;
         }
@@ -128,10 +122,9 @@ class WorkoutController {
             exit;
         }
 
-        // 🛡️ !!! ZMĚNA: Kontrola vlastnictví (Autorizace).
-        // Ověříme, zda ID přihlášeného uživatele odpovídá ID autora uloženého u výkonu.
-        if ($book['created_by'] !== $_SESSION['user_id']) {
-            $this->addErrorMessage('Nemáte oprávnění upravovat tento výkon, protože nejste autorem.');
+        // 🛡️ OPRAVENO: Kontrola vlastnictví přes created_by
+        if ($workout['created_by'] !== $_SESSION['user_id']) {
+            $this->addErrorMessage('NEMÁTE OPRÁVNĚNÍ UPRAVOVAT TENTO VÝKON.');
             header('Location: ' . BASE_URL . '/index.php');
             exit;
         }
@@ -140,25 +133,21 @@ class WorkoutController {
     }
 
     // 6. AKTUALIZACE STÁVAJÍCÍHO ZÁZNAMU
-    // 5. Zpracování dat odeslaných z editačního formuláře (FITNESS VERZE)
     public function update($id = null) {
-        // Zabezpečení: Je k dispozici ID?
         if (!$id) {
-            $this->addErrorMessage('Nebylo zadáno ID záznamu k aktualizaci.');
+            $this->addErrorMessage('NEBYLO ZADÁNO ID ZÁZNAMU.');
             header('Location: ' . BASE_URL . '/index.php');
             exit;
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
-            // 🔒 KONTROLA: Je uživatel přihlášen?
             if (!isset($_SESSION['user_id'])) {
-                $this->addErrorMessage('Pro uložení změn se musíte nejprve přihlásit.');
+                $this->addErrorMessage('PRO ULOŽENÍ ZMĚN SE MUSÍTE PŘIHLÁSIT.');
                 header('Location: ' . BASE_URL . '/index.php?url=auth/login');
                 exit;
             }
 
-            // 🛡️ PŘÍPRAVA MODELU: Potřebujeme data z DB pro kontrolu vlastnictví
             require_once '../app/models/Database.php';
             require_once '../app/models/Workout.php';
 
@@ -168,15 +157,12 @@ class WorkoutController {
 
             $workout = $workoutModel->getById($id);
 
-            // 🛡️ AUTORIZACE: Patří tento trénink přihlášenému uživateli?
-            // (Předpokládáme, že v tabulce workouts máš sloupec user_id nebo created_by)
-            if (!$workout || $workout['user_id'] !== $_SESSION['user_id']) {
-                $this->addErrorMessage('Nemáte oprávnění upravovat tento trénink, protože nejste jeho autorem.');
+            // 🛡️ OPRAVENO: Kontrola vlastnictví přes created_by
+            if (!$workout || $workout['created_by'] !== $_SESSION['user_id']) {
+                $this->addErrorMessage('NEMÁTE OPRÁVNĚNÍ UPRAVOVAT TENTO TRÉNINK.');
                 header('Location: ' . BASE_URL . '/index.php');
                 exit;
             }
-
-            // --- POKUD KONTROLY PROŠLY, ZPRACOVÁVÁME DATA ---
 
             $exercise = htmlspecialchars($_POST['exercise_name'] ?? '');
             $muscle = htmlspecialchars($_POST['muscle_group'] ?? '');
@@ -186,16 +172,12 @@ class WorkoutController {
             $date = $_POST['workout_date'] ?? date('Y-m-d');
             $description = htmlspecialchars($_POST['description'] ?? '');
 
-            // Zpracování nových obrázků
             $uploadedImages = $this->processImageUploads(); 
 
-            // --- ZÁCHRANNÁ BRZDA PRO OBRÁZKY ---
-            // Pokud uživatel nenahrál nové fotky, zachováme ty původní
             if (empty($uploadedImages)) {
                 $uploadedImages = json_decode($workout['images'] ?? '[]', true);
             }
 
-            // Volání updatu nad modelem
             $isUpdated = $workoutModel->update(
                 $id, $exercise, $muscle, $weight, $reps, $sets, $date, $description, $uploadedImages
             );
@@ -205,32 +187,30 @@ class WorkoutController {
                 header('Location: ' . BASE_URL . '/index.php');
                 exit;
             } else {
-                $this->addErrorMessage('NASTALA CHYBA PŘI UKLÁDÁNÍ ZMĚN.');
+                $this->addErrorMessage('NASTALA CHYBA PŘI UKLÁDÁNÍ.');
             }
             
         } else {
-            // Pokud někdo přistoupí na URL přímo bez POSTu
-            $this->addNoticeMessage('Pro úpravu záznamu je nutné odeslat formulář.');
+            $this->addNoticeMessage('PRO ÚPRAVU JE NUTNÉ ODESLAT FORMULÁŘ.');
+            header('Location: ' . BASE_URL . '/index.php');
+            exit;
         }
     }
+
     // 7. SMAZÁNÍ VÝKONU
-    // 7. Smazání existujícího výkonu (ZABEZPEČENÁ VERZE)
     public function delete($id = null) {
-        // 🔒 KONTROLA AUTENTIZACE: Je uživatel vůbec v systému?
         if (!isset($_SESSION['user_id'])) {
-            $this->addErrorMessage('Pro smazání výkonu se musíte nejprve přihlásit.');
+            $this->addErrorMessage('PRO SMAZÁNÍ SE MUSÍTE PŘIHLÁSIT.');
             header('Location: ' . BASE_URL . '/index.php?url=auth/login');
             exit;
         }
 
-        // Kontrola, zda bylo v URL předáno ID
         if (!$id) {
-            $this->addErrorMessage('Nebylo zadáno ID záznamu ke smazání.');
+            $this->addErrorMessage('CHYBÍ ID ZÁZNAMU.');
             header('Location: ' . BASE_URL . '/index.php');
             exit;
         }
 
-        // Načtení potřebných tříd a spojení s databází
         require_once '../app/models/Database.php';
         require_once '../app/models/Workout.php';
 
@@ -238,32 +218,27 @@ class WorkoutController {
         $db = $database->getConnection();
         $workoutModel = new Workout($db);
 
-        // 🛡️ KONTROLA AUTORIZACE (Vlastnictví): Nejdříve musíme trénink načíst
         $workout = $workoutModel->getById($id);
 
-        // Pokud trénink v DB neexistuje
         if (!$workout) {
-            $this->addErrorMessage('Záznam nebyl nalezen, pravděpodobně již byl smazán.');
+            $this->addErrorMessage('ZÁZNAM NEBYL NALEZEN.');
             header('Location: ' . BASE_URL . '/index.php');
             exit;
         }
 
-        // 🛡️ HLAVNÍ ZEĎ: Ověříme, zda je aktuálně přihlášený uživatel autorem záznamu
-        // (Změň 'user_id' na 'created_by', pokud to tak máš v databázi)
-        if ($workout['user_id'] !== $_SESSION['user_id']) {
-            $this->addErrorMessage('Nemáte oprávnění smazat tento záznam, protože nejste jeho autorem.');
+        // 🛡️ OPRAVENO: Kontrola vlastnictví přes created_by
+        if ($workout['created_by'] !== $_SESSION['user_id']) {
+            $this->addErrorMessage('NEMÁTE OPRÁVNĚNÍ SMAZAT TENTO ZÁZNAM.');
             header('Location: ' . BASE_URL . '/index.php');
             exit;
         }
 
-        // 🛡️ FINÁLNÍ KROK: Teprve po úspěšném ověření provedeme samotné smazání
         $isDeleted = $workoutModel->delete($id);
 
-        // Vyhodnocení výsledku a přesměrování s notifikací
         if ($isDeleted) {
-            $this->addSuccessMessage('VÁŠ VÝKON BYL TRVALE SMAZÁN Z HISTORIE.');
+            $this->addSuccessMessage('VÁŠ VÝKON BYL TRVALE SMAZÁN.');
         } else {
-            $this->addErrorMessage('Nastala chyba. Záznam se nepodařilo smazat.');
+            $this->addErrorMessage('NASTALA CHYBA PŘI MAZÁNÍ.');
         }
 
         header('Location: ' . BASE_URL . '/index.php');
@@ -277,7 +252,6 @@ class WorkoutController {
     }
 
      protected function addNoticeMessage($message) {
-        // Žlutá informativní zpráva
         $_SESSION['messages']['notice'][] = $message;
     }
 

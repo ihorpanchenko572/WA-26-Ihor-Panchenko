@@ -57,7 +57,7 @@
     </a>
 
     <div class="flex space-x-4">
-        <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] === $w['user_id']): ?>
+        <?php if (isset($_SESSION['user_id']) && (int)$_SESSION['user_id'] === (int)$w['created_by']): ?>
             
             <a href="<?= BASE_URL ?>/index.php?url=workout/edit/<?= $w['id'] ?>" 
                class="text-[10px] font-black hover:text-blue-400 transition-all uppercase italic">
