@@ -49,13 +49,30 @@
                         </div>
                     </div>
 
-                    <div class="mt-8 flex justify-between items-center opacity-40 group-hover:opacity-100 transition-opacity">
-                        <a href="<?= BASE_URL ?>/index.php?url=workout/show/<?= $w['id'] ?>" class="text-[10px] font-black hover:text-lime-500 transition-all uppercase tracking-[0.2em] italic border-b-2 border-transparent hover:border-lime-500">DETAIL</a>
-                        <div class="flex space-x-4">
-                            <a href="<?= BASE_URL ?>/index.php?url=workout/edit/<?= $w['id'] ?>" class="text-[10px] font-black hover:text-blue-400 transition-all uppercase italic">Edit</a>
-                            <a href="<?= BASE_URL ?>/index.php?url=workout/delete/<?= $w['id'] ?>" onclick="return confirm('Smazat tento výkon? Žádná lítost?')" class="text-[10px] font-black hover:text-red-600 transition-all uppercase italic text-zinc-600">Smazat</a>
-                        </div>
-                    </div>
+                   <div class="mt-8 flex justify-between items-center opacity-40 group-hover:opacity-100 transition-opacity">
+    
+    <a href="<?= BASE_URL ?>/index.php?url=workout/show/<?= $w['id'] ?>" 
+       class="text-[10px] font-black hover:text-lime-500 transition-all uppercase tracking-[0.2em] italic border-b-2 border-transparent hover:border-lime-500">
+       DETAIL
+    </a>
+
+    <div class="flex space-x-4">
+        <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] === $w['user_id']): ?>
+            
+            <a href="<?= BASE_URL ?>/index.php?url=workout/edit/<?= $w['id'] ?>" 
+               class="text-[10px] font-black hover:text-blue-400 transition-all uppercase italic">
+               Edit
+            </a>
+            
+            <a href="<?= BASE_URL ?>/index.php?url=workout/delete/<?= $w['id'] ?>" 
+               onclick="return confirm('Smazat tento výkon? Žádná lítost?')" 
+               class="text-[10px] font-black hover:text-red-600 transition-all uppercase italic text-zinc-600">
+               Smazat
+            </a>
+
+        <?php endif; ?>
+    </div>
+</div>
                 </div>
             <?php endforeach; ?>
         </div>
