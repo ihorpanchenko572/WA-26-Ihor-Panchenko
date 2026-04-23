@@ -54,6 +54,14 @@ class BookController {
 
     // 1. Zobrazení formuláře pro přidání nové knihy
     public function create() {
+
+     // !!! ZMĚNA: Autorizace: Pokud uživatel není přihlášen, nemá tu co dělat
+    if (!isset($_SESSION['user_id'])) {
+        $this->addErrorMessage('Pro přidání knihy se musíte nejprve přihlásit.');
+        header('Location: ' . BASE_URL . '/index.php?url=auth/login');
+        exit;
+    }
+
         // Zde se pouze načte (vloží) připravený soubor s HTML formulářem
         require_once '../app/views/books/book_create.php';
     }
@@ -62,6 +70,15 @@ class BookController {
     public function store() {
         // Kontrola, zda byl formulář odeslán metodou POST
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+        // !!! ZMĚNA: ZDE PŘIDÁME KONTROLU PŘIHLÁŠENÍ ---
+            if (!isset($_SESSION['user_id'])) {
+                $this->addErrorMessage('Pro uložení knihy musíte být přihlášeni.');
+                header('Location: ' . BASE_URL . '/index.php?url=auth/login');
+                exit;
+            }
+            $userId = $_SESSION['user_id'];
+            // ---------------------------------------
             
             // 1. Získání a očištění textových dat (ochrana proti XSS)
             $title = htmlspecialchars($_POST['title'] ?? '');
@@ -96,7 +113,8 @@ class BookController {
             $bookModel = new Book($db);
             $isSaved = $bookModel->create(
                 $title, $author, $category, $subcategory, 
-                $year, $price, $isbn, $description, $link, $uploadedImages
+                $year, $price, $isbn, $description, $link, $uploadedImages,
+                $userId // PŘEDÁVÁME ID UŽIVATELE
             );
 
             // 3. Vyhodnocení výsledku a přesměrování
