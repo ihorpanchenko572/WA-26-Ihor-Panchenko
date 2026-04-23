@@ -133,6 +133,7 @@ class WorkoutController {
     }
 
     // 6. AKTUALIZACE STÁVAJÍCÍHO ZÁZNAMU
+    // 6. AKTUALIZACE STÁVAJÍCÍHO ZÁZNAMU
     public function update($id = null) {
         if (!$id) {
             $this->addErrorMessage('NEBYLO ZADÁNO ID ZÁZNAMU.');
@@ -148,6 +149,9 @@ class WorkoutController {
                 exit;
             }
 
+            // Získání ID přihlášeného uživatele
+            $userId = $_SESSION['user_id'];
+
             require_once '../app/models/Database.php';
             require_once '../app/models/Workout.php';
 
@@ -157,7 +161,6 @@ class WorkoutController {
 
             $workout = $workoutModel->getById($id);
 
-            // 🛡️ OPRAVENO: Kontrola vlastnictví přes created_by
             if (!$workout || $workout['created_by'] !== $_SESSION['user_id']) {
                 $this->addErrorMessage('NEMÁTE OPRÁVNĚNÍ UPRAVOVAT TENTO TRÉNINK.');
                 header('Location: ' . BASE_URL . '/index.php');
@@ -178,8 +181,9 @@ class WorkoutController {
                 $uploadedImages = json_decode($workout['images'] ?? '[]', true);
             }
 
+            // !!! ZMĚNA: Přidáváme $userId jako poslední argument
             $isUpdated = $workoutModel->update(
-                $id, $exercise, $muscle, $weight, $reps, $sets, $date, $description, $uploadedImages
+                $id, $exercise, $muscle, $weight, $reps, $sets, $date, $description, $uploadedImages, $userId
             );
 
             if ($isUpdated) {

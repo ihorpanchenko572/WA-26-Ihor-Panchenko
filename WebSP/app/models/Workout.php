@@ -67,7 +67,11 @@ class Workout {
     /**
      * Aktualizace existujícího tréninku (TATO METODA TI CHYBĚLA)
      */
-    public function update($id, $exercise, $muscle, $weight, $reps, $sets, $date, $description, $images): bool {
+    /**
+     * Aktualizace existujícího tréninku (UPRAVENO O UPDATED_BY)
+     */
+    public function update($id, $exercise, $muscle, $weight, $reps, $sets, $date, $description, $images, $userId = null): bool {
+        // !!! ZMĚNA: Přidán sloupec updated_by do SET části
         $sql = "UPDATE workouts 
                 SET exercise_name = :exercise, 
                     muscle_group = :muscle, 
@@ -76,7 +80,8 @@ class Workout {
                     sets = :sets, 
                     workout_date = :date, 
                     description = :description, 
-                    images = :images
+                    images = :images,
+                    updated_by = :updated_by
                 WHERE id = :id";
                 
         $stmt = $this->db->prepare($sql);
@@ -90,7 +95,8 @@ class Workout {
             ':sets'        => $sets,
             ':date'        => $date,
             ':description' => $description,
-            ':images'      => json_encode($images)
+            ':images'      => json_encode($images),
+            ':updated_by'  => $userId // !!! ZMĚNA: Předání ID přihlášeného uživatele
         ]);
     }
 
