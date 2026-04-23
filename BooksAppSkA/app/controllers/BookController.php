@@ -247,8 +247,8 @@ public function delete($id = null) {
 
     // 5. Zpracování dat odeslaných z editačního formuláře
     // 5. Zpracování dat odeslaných z editačního formuláře
+    // 5. Zpracování dat odeslaných z editačního formuláře
     public function update($id = null) {
-        // Zabezpečení: Je k dispozici ID a byl odeslán formulář?
         if (!$id) {
             $this->addErrorMessage('Nebylo zadáno ID knihy k aktualizaci.');
             header('Location: ' . BASE_URL . '/index.php');
@@ -256,16 +256,15 @@ public function delete($id = null) {
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            
-            // 🔒 ZMĚNA: Kontrola, zda je uživatel vůbec přihlášen.
             if (!isset($_SESSION['user_id'])) {
                 $this->addErrorMessage('Pro uložení změn se musíte nejprve přihlásit.');
                 header('Location: ' . BASE_URL . '/index.php?url=auth/login');
                 exit;
             }
 
-            // 🛡️ ZMĚNA: Komunikaci s databází jsme museli přesunout nahoru.
-            // Musíme totiž nejprve zjistit, čí ta kniha vlastně je, než cokoli změníme.
+            // Získání ID aktuálně přihlášeného uživatele ze session
+            $userId = $_SESSION['user_id']; 
+
             require_once '../app/models/Database.php';
             require_once '../app/models/Book.php';
 
@@ -275,57 +274,43 @@ public function delete($id = null) {
 
             $book = $bookModel->getById($id);
 
-            // 🛡️ ZMĚNA: Kontrola vlastnictví (Autorizace) - "Skutečná zeď".
-            // Pokud kniha neexistuje, nebo ID autora nesouhlasí s přihlášeným uživatelem, je nutné ukládání přerušit.
             if (!$book || $book['created_by'] !== $_SESSION['user_id']) {
-                $this->addErrorMessage('Nemáte oprávnění ukládat změny u této knihy, protože nejste jejím autorem.');
+                $this->addErrorMessage('Nemáte oprávnění ukládat změny u této knihy.');
                 header('Location: ' . BASE_URL . '/index.php');
                 exit;
             }
 
-            // --- POKUD KONTROLY PROŠLY, POKRAČUJEME VE ZPRACOVÁNÍ DAT ---
-
-            // 1. Získání a očištění textových dat
             $title = htmlspecialchars($_POST['title'] ?? '');
             $author = htmlspecialchars($_POST['author'] ?? '');
             $isbn = htmlspecialchars($_POST['isbn'] ?? '');
             $category = htmlspecialchars($_POST['category'] ?? '');
             $subcategory = htmlspecialchars($_POST['subcategory'] ?? '');
-            
-            // Přetypování číselných hodnot
             $year = (int)($_POST['year'] ?? 0);
             $price = (float)($_POST['price'] ?? 0);
-            
             $link = htmlspecialchars($_POST['link'] ?? '');
             $description = htmlspecialchars($_POST['description'] ?? '');
 
-            // Zavolání metody, která zpracuje soubory v $_FILES
             $uploadedImages = $this->processImageUploads();
 
-            // 3. Volání updatu nad modelem
-            // (Objekt $bookModel už máme vytvořený nahoře, takže ho jen použijeme)
+            // !!! ZMĚNA: Přidáváme $userId jako poslední argument
             $isUpdated = $bookModel->update(
                 $id, $title, $author, $category, $subcategory, 
-                $year, $price, $isbn, $description, $link, $uploadedImages
+                $year, $price, $isbn, $description, $link, $uploadedImages,
+                $userId 
             );
 
-            // 4. Vyhodnocení výsledku a přesměrování
             if ($isUpdated) {
-                // Vyvolání zelené notifikace o úspěchu
                 $this->addSuccessMessage('Kniha byla úspěšně upravena.');
                 header('Location: ' . BASE_URL . '/index.php');
                 exit;
             } else {
-                // Vyvolání červené chybové notifikace
                 $this->addErrorMessage('Nastala chyba. Změny se nepodařilo uložit.');
             }
             
         } else {
-            // Pokud by někdo zkusil přistoupit na URL napřímo bez odeslání formuláře (žlutá notifikace)
             $this->addNoticeMessage('Pro úpravu knihy je nutné odeslat formulář.');
         }
     }
-
 
     // --- Pomocné metody pro systém notifikací ---
     // (V reálném projektu by tyto metody ideálně ležely v hlavní nadřazené třídě Controller)

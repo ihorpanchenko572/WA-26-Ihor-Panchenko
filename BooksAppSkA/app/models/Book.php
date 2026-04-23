@@ -64,10 +64,13 @@ class Book {
     }
 
     // Aktualizace existující knihy
+   // Aktualizace existující knihy (UPRAVENO)
     public function update(
         $id, $title, $author, $category, $subcategory, 
-        $year, $price, $isbn, $description, $link, $images = []
+        $year, $price, $isbn, $description, $link, $images = [],
+        $userId = null // !!! ZMĚNA: NOVÝ PARAMETR PRO ID UŽIVATELE
     ) {
+        // !!! ZMĚNA: Přidán sloupec updated_by do SET části dotazu
         $sql = "UPDATE books 
                 SET title = :title, 
                     author = :author, 
@@ -78,12 +81,12 @@ class Book {
                     isbn = :isbn, 
                     description = :description, 
                     link = :link, 
-                    images = :images
+                    images = :images,
+                    updated_by = :updated_by
                 WHERE id = :id";
                 
         $stmt = $this->db->prepare($sql);
 
-        // Parametrů je stejné množství jako u create, navíc je pouze :id
         return $stmt->execute([
             ':id' => $id,
             ':title' => $title,
@@ -95,7 +98,8 @@ class Book {
             ':isbn' => $isbn,
             ':description' => $description,
             ':link' => $link,
-            ':images' => json_encode($images)
+            ':images' => json_encode($images),
+            ':updated_by' => $userId // !!! ZMĚNA: Předání ID do dotazu
         ]);
     }
 
