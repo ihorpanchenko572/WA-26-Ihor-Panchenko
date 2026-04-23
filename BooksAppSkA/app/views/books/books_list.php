@@ -54,12 +54,24 @@
                                     <td class="px-6 py-4 text-slate-500 font-mono"><?= htmlspecialchars($book['year']) ?></td>
                                     <td class="px-6 py-4 text-right font-bold text-slate-800"><?= htmlspecialchars($book['price']) ?> Kč</td>
                                     <td class="px-6 py-4 text-center">
-                                        <div class="flex justify-center space-x-3 text-sm">
-                                            <a href="<?= BASE_URL ?>/index.php?url=book/show/<?= $book['id'] ?>" class="text-orange-600 hover:text-orange-800 transition-colors underline decoration-orange-200 underline-offset-4">Detail</a>
-                                            <a href="<?= BASE_URL ?>/index.php?url=book/edit/<?= $book['id'] ?>" class="text-emerald-600 hover:text-emerald-800 transition-colors underline decoration-emerald-200 underline-offset-4">Upravit</a>
-                                            <a href="<?= BASE_URL ?>/index.php?url=book/delete/<?= $book['id'] ?>" onclick="return confirm('Opravdu chcete tuto knihu smazat?')" class="text-rose-600 hover:text-rose-800 transition-colors underline decoration-rose-200 underline-offset-4">Smazat</a>
-                                        </div>
-                                    </td>
+                     <div class="flex justify-center space-x-3 text-sm">
+                          <a href="<?= BASE_URL ?>/index.php?url=book/show/<?= $book['id'] ?>" 
+                             class="text-orange-600 hover:text-orange-800 transition-colors underline decoration-orange-200 underline-offset-4">
+                               Detail
+                               </a>
+        <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] === $book['created_by']): ?>
+            <a href="<?= BASE_URL ?>/index.php?url=book/edit/<?= $book['id'] ?>" 
+               class="text-emerald-600 hover:text-emerald-800 transition-colors underline decoration-emerald-200 underline-offset-4">
+               Upravit
+            </a>
+            <a href="<?= BASE_URL ?>/index.php?url=book/delete/<?= $book['id'] ?>" 
+               onclick="return confirm('Opravdu chcete tuto knihu smazat?')" 
+               class="text-rose-600 hover:text-rose-800 transition-colors underline decoration-rose-200 underline-offset-4">
+               Smazat
+            </a>
+        <?php endif; ?>
+    </div>
+</td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
