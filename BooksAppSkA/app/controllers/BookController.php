@@ -62,6 +62,17 @@ class BookController {
         exit;
     }
 
+     // ZMĚNA: Načtení databáze a nového modelu Category
+        require_once '../app/models/Database.php';
+        require_once '../app/models/Category.php';
+
+        $database = new Database();
+        $db = $database->getConnection();
+
+        // ZMĚNA: Získání seznamu kategorií
+        $categoryModel = new Category($db);
+        $categories = $categoryModel->getAllCategories();
+
         // Zde se pouze načte (vloží) připravený soubor s HTML formulářem
         require_once '../app/views/books/book_create.php';
     }
@@ -216,13 +227,19 @@ public function delete($id = null) {
         // Načtení potřebných tříd a spojení s databází
         require_once '../app/models/Database.php';
         require_once '../app/models/Book.php';
+         require_once '../app/models/Category.php';
 
         $database = new Database();
         $db = $database->getConnection();
 
+        // ZMĚNA: Získání seznamu kategorií
+        $categoryModel = new Category($db);
+        $categories = $categoryModel->getAllCategories();
+
         // Získání dat o konkrétní knize
         $bookModel = new Book($db);
         $book = $bookModel->getById($id); // Proměnná $book nyní obsahuje asociativní pole dat
+
 
         // Bezpečnostní kontrola: Zda kniha s daným ID vůbec existuje
         if (!$book) {

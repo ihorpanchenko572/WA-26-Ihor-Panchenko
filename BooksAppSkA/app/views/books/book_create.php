@@ -39,11 +39,24 @@
                                    class="w-full bg-orange-50/30 border border-orange-200 rounded-md px-4 py-2 text-slate-800 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors">
                         </div>
                         
-                        <div>
-                            <label for="category" class="block text-xs font-bold text-orange-700 mb-1 uppercase tracking-wider">Kategorie</label>
-                            <input type="text" id="category" name="category" 
-                                   class="w-full bg-orange-50/30 border border-orange-200 rounded-md px-4 py-2 text-slate-800 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors">
-                        </div>
+                        <div class="md:col-span-1">
+    <label for="category" class="block text-[11px] font-bold text-slate-500 mb-1 uppercase tracking-wider">
+        Kategorie <span class="text-orange-500">*</span>
+    </label>
+    
+    <select id="category" name="category" required 
+            class="w-full bg-slate-800 border border-slate-700 rounded-md px-4 py-2 text-slate-200 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all appearance-none cursor-pointer">
+        
+        <option value="" class="bg-slate-900 text-slate-400 italic">-- Vyberte kategorii --</option>
+        
+        <?php foreach ($categories as $cat): ?>
+            <option value="<?= htmlspecialchars($cat['id']) ?>" class="bg-slate-900 text-slate-200">
+                <?= htmlspecialchars($cat['name']) ?>
+            </option>
+        <?php endforeach; ?>
+        
+    </select>
+</div>
                         
                         <div>
                             <label for="subcategory" class="block text-xs font-bold text-orange-700 mb-1 uppercase tracking-wider">Podkategorie</label>
