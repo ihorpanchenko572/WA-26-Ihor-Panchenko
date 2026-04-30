@@ -43,12 +43,28 @@ class WorkoutController {
     }
 
     // 3. FORMULÁŘ PRO NOVÝ ZÁPIS
+   // 3. FORMULÁŘ PRO NOVÝ ZÁPIS (UPRAVENO PRO SVALOVÉ SKUPINY)
     public function create() {
+        // 1. Kontrola přihlášení
         if (!isset($_SESSION['user_id'])) {
             $this->addErrorMessage('PRO PŘIDÁNÍ VÝKONU SE MUSÍTE NEJPRVE PŘIHLÁSIT.');
             header('Location: ' . BASE_URL . '/index.php?url=auth/login');
             exit;
         }
+
+        // 2. Načtení potřebných modelů
+        require_once '../app/models/Database.php';
+        require_once '../app/models/MuscleGroup.php'; // Tvůj nový model
+
+        $database = new Database();
+        $db = $database->getConnection();
+
+        // 3. Získání svalových skupin z databáze
+        $mgModel = new MuscleGroup($db);
+        $muscleGroups = $mgModel->getAll(); 
+
+        // 4. Předání dat do pohledu
+        // Proměnná $muscleGroups bude nyní dostupná v souboru workout_create.php
         require_once '../app/views/workouts/workout_create.php';
     }
 
@@ -65,7 +81,10 @@ class WorkoutController {
             $userId = $_SESSION['user_id'];
             
             $exercise = htmlspecialchars($_POST['exercise_name'] ?? '');
-            $muscle = htmlspecialchars($_POST['muscle_group'] ?? '');
+
+            // 🛡️ ZMĚNA: Svalová skupina k nám nyní chodí jako číslo (ID z value atributu selectu)
+            $muscle = (int)($_POST['muscle_group'] ?? 0);
+
             $weight = (float)($_POST['weight'] ?? 0);
             $reps = (int)($_POST['reps'] ?? 0);
             $sets = (int)($_POST['sets'] ?? 0);
@@ -94,6 +113,7 @@ class WorkoutController {
     }
 
     // 5. FORMULÁŘ PRO EDITACI
+    // 5. FORMULÁŘ PRO EDITACI (UPRAVENO PRO SVALOVÉ SKUPINY)
     public function edit($id = null) {
         if (!isset($_SESSION['user_id'])) {
             $this->addErrorMessage('PRO ÚPRAVU VÝKONU SE MUSÍTE NEJPRVE PŘIHLÁSIT.');
@@ -109,10 +129,12 @@ class WorkoutController {
 
         require_once '../app/models/Database.php';
         require_once '../app/models/Workout.php';
+        require_once '../app/models/MuscleGroup.php'; // !!! PŘIDÁNO: Načtení modelu pro svalové skupiny
 
         $database = new Database();
         $db = $database->getConnection();
 
+        // 🛡️ ZÍSKÁNÍ DAT O TRÉNINKU
         $workoutModel = new Workout($db);
         $workout = $workoutModel->getById($id);
 
@@ -122,16 +144,21 @@ class WorkoutController {
             exit;
         }
 
-        // 🛡️ OPRAVENO: Kontrola vlastnictví přes created_by
+        // 🛡️ Kontrola vlastnictví
         if ($workout['created_by'] !== $_SESSION['user_id']) {
             $this->addErrorMessage('NEMÁTE OPRÁVNĚNÍ UPRAVOVAT TENTO VÝKON.');
             header('Location: ' . BASE_URL . '/index.php');
             exit;
         }
 
+        // --- !!! NOVINKA: ZÍSKÁNÍ SEZNAMU VŠECH SVALOVÝCH SKUPIN PRO SELECT ---
+        $mgModel = new MuscleGroup($db);
+        $muscleGroups = $mgModel->getAll(); 
+
+        // Nyní šablona workout_edit.php uvidí jak data tréninku ($workout), 
+        // tak i seznam všech skupin ($muscleGroups)
         require_once '../app/views/workouts/workout_edit.php';
     }
-
     // 6. AKTUALIZACE STÁVAJÍCÍHO ZÁZNAMU
     // 6. AKTUALIZACE STÁVAJÍCÍHO ZÁZNAMU
     public function update($id = null) {
@@ -149,7 +176,6 @@ class WorkoutController {
                 exit;
             }
 
-            // Získání ID přihlášeného uživatele
             $userId = $_SESSION['user_id'];
 
             require_once '../app/models/Database.php';
@@ -168,7 +194,10 @@ class WorkoutController {
             }
 
             $exercise = htmlspecialchars($_POST['exercise_name'] ?? '');
-            $muscle = htmlspecialchars($_POST['muscle_group'] ?? '');
+
+            // 🛡️ ZMĚNA: Stejně jako ve store, i tady ukládáme ID svalové skupiny jako celé číslo
+            $muscle = (int)($_POST['muscle_group'] ?? 0);
+
             $weight = (float)($_POST['weight'] ?? 0);
             $reps = (int)($_POST['reps'] ?? 0);
             $sets = (int)($_POST['sets'] ?? 0);
@@ -181,7 +210,6 @@ class WorkoutController {
                 $uploadedImages = json_decode($workout['images'] ?? '[]', true);
             }
 
-            // !!! ZMĚNA: Přidáváme $userId jako poslední argument
             $isUpdated = $workoutModel->update(
                 $id, $exercise, $muscle, $weight, $reps, $sets, $date, $description, $uploadedImages, $userId
             );

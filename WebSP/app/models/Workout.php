@@ -36,14 +36,14 @@ class Workout {
      * Vytvoření nového tréninkového záznamu
      */
     public function create(
-        $exercise, 
-        $muscle, 
-        $weight, 
-        $reps, 
-        $sets, 
-        $date, 
-        $description, 
-        $images,
+        string $exercise,
+        int $muscle,
+        float $weight,
+        int $reps,
+        int $sets,
+        string $date,
+        string $description,
+        array $images,
         int $userId // !!! ZMĚNA: NOVÝ PARAMETR PRO ID UŽIVATELE
         ): bool {
         $sql = "INSERT INTO workouts (exercise_name, muscle_group, weight, reps, sets, workout_date, description, images, created_by)

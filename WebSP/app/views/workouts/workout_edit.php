@@ -18,10 +18,29 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-black uppercase text-zinc-500 mb-2">Svalová skupina</label>
-                    <input type="text" name="muscle_group" value="<?= htmlspecialchars($workout['muscle_group']) ?>"
-                           class="w-full bg-black border-2 border-zinc-800 focus:border-blue-500 p-3 text-white outline-none">
-                </div>
+    <label class="block text-xs font-black uppercase text-zinc-500 mb-2">
+        Svalová skupina <span class="text-lime-500">*</span>
+    </label>
+    <div class="relative">
+        <select name="muscle_group" required 
+                class="w-full bg-black border-2 border-zinc-800 focus:border-lime-500 p-3 text-white outline-none appearance-none cursor-pointer transition-colors uppercase">
+            
+            <?php foreach ($muscleGroups as $mg): ?>
+                <?php 
+                // Porovnáme ID z databáze tréninku s ID v číselníku svalů
+                $isSelected = ($workout['muscle_group'] == $mg['id']) ? 'selected' : ''; 
+                ?>
+                <option value="<?= htmlspecialchars($mg['id']) ?>" <?= $isSelected ?> class="bg-zinc-900 text-white">
+                    <?= htmlspecialchars($mg['name']) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+        <!-- Designová šipka -->
+        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-lime-500">
+            <svg class="h-5 w-5 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" /></svg>
+        </div>
+    </div>
+</div>
 
                 <div>
                     <label class="block text-xs font-black uppercase text-zinc-500 mb-2">Datum tréninku</label>
