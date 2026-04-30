@@ -95,7 +95,9 @@ class BookController {
             $title = htmlspecialchars($_POST['title'] ?? '');
             $author = htmlspecialchars($_POST['author'] ?? '');
             $isbn = htmlspecialchars($_POST['isbn'] ?? '');
-            $category = htmlspecialchars($_POST['category'] ?? '');
+            // $category = htmlspecialchars($_POST['category'] ?? '');
+                 // 🛡️ ZMĚNA: Kategorie k nám nyní chodí jako číslo (ID z value atributu selectu)
+            $category = (int)($_POST['category'] ?? 0);
             $subcategory = htmlspecialchars($_POST['subcategory'] ?? '');
             
             // U číselných hodnot se provádí explicitní přetypování
@@ -300,7 +302,9 @@ public function delete($id = null) {
             $title = htmlspecialchars($_POST['title'] ?? '');
             $author = htmlspecialchars($_POST['author'] ?? '');
             $isbn = htmlspecialchars($_POST['isbn'] ?? '');
-            $category = htmlspecialchars($_POST['category'] ?? '');
+            // $category = htmlspecialchars($_POST['category'] ?? '');
+                 // 🛡️ ZMĚNA: Kategorie k nám nyní chodí jako číslo (ID z value atributu selectu)
+            $category = (int)($_POST['category'] ?? 0);
             $subcategory = htmlspecialchars($_POST['subcategory'] ?? '');
             $year = (int)($_POST['year'] ?? 0);
             $price = (float)($_POST['price'] ?? 0);
