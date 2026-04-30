@@ -41,16 +41,13 @@
                         
                         <div>
     <label for="category">Kategorie *</label>
+    <!-- ZMĚNA: Použití select místo input a iterace přes $categories -->
     <select id="category" name="category" required>
         <option value="">-- Vyberte kategorii --</option>
         
         <?php foreach ($categories as $cat): ?>
-            <?php 
-            // Zkontrolujeme, zda ID aktuálně vykreslované kategorie odpovídá ID kategorie, kterou má kniha uloženou
-            $isSelected = ($book['category'] == $cat['id']) ? 'selected' : ''; 
-            ?>
-            
-            <option value="<?= htmlspecialchars($cat['id']) ?>" <?= $isSelected ?>>
+            <!-- Do value ukládáme ID kategorie (to se odešle do DB), ale uživateli zobrazíme název -->
+            <option value="<?= htmlspecialchars($cat['id']) ?>">
                 <?= htmlspecialchars($cat['name']) ?>
             </option>
         <?php endforeach; ?>
@@ -58,11 +55,30 @@
     </select>
 </div>
                         
-                        <div>
-                            <label for="subcategory" class="block text-xs font-bold text-orange-700 mb-1 uppercase tracking-wider">Podkategorie</label>
-                            <input type="text" id="subcategory" name="subcategory" 
-                                   class="w-full bg-orange-50/30 border border-orange-200 rounded-md px-4 py-2 text-slate-800 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors">
-                        </div>
+                       <div class="md:col-span-1">
+    <label for="subcategory" class="block text-[11px] font-bold text-slate-500 mb-1 uppercase tracking-wider">
+        Podkategorie
+    </label>
+    
+    <div class="relative">
+        <select id="subcategory" name="subcategory" 
+                class="w-full bg-slate-800 border border-slate-700 rounded-md px-4 py-2 text-slate-200 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all appearance-none cursor-pointer">
+            
+            <option value="" class="bg-slate-900 text-slate-400 italic">-- Vyberte podkategorii (volitelné) --</option>
+            
+            <?php foreach ($subcategories as $sub): ?>
+                <option value="<?= htmlspecialchars($sub['id']) ?>" class="bg-slate-900 text-slate-200">
+                    <?= htmlspecialchars($sub['name']) ?>
+                </option>
+            <?php endforeach; ?>
+            
+        </select>
+        <!-- Šipka pro select (volitelné, pro lepší vzhled) -->
+        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+            <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" /></svg>
+        </div>
+    </div>
+</div>
                         
                         <div>
                             <label for="price" class="block text-xs font-bold text-orange-700 mb-1 uppercase tracking-wider">Cena knihy (Kč)</label>

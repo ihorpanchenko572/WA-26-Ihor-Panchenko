@@ -53,27 +53,32 @@ class BookController {
 
 
     // 1. Zobrazení formuláře pro přidání nové knihy
+    // Zobrazení formuláře pro přidání knihy
     public function create() {
+        // Kontrola přihlášení
+        if (!isset($_SESSION['user_id'])) {
+            $this->addErrorMessage('Pro přidání knihy se musíte nejprve přihlásit.');
+            header('Location: ' . BASE_URL . '/index.php?url=auth/login');
+            exit;
+        }
 
-     // !!! ZMĚNA: Autorizace: Pokud uživatel není přihlášen, nemá tu co dělat
-    if (!isset($_SESSION['user_id'])) {
-        $this->addErrorMessage('Pro přidání knihy se musíte nejprve přihlásit.');
-        header('Location: ' . BASE_URL . '/index.php?url=auth/login');
-        exit;
-    }
-
-     // ZMĚNA: Načtení databáze a nového modelu Category
+        // Načtení databáze a modelu Category
         require_once '../app/models/Database.php';
         require_once '../app/models/Category.php';
 
         $database = new Database();
         $db = $database->getConnection();
 
-        // ZMĚNA: Získání seznamu kategorií
+        // Inicializace modelu Category
         $categoryModel = new Category($db);
+
+        // Získání seznamu hlavních kategorií
         $categories = $categoryModel->getAllCategories();
 
-        // Zde se pouze načte (vloží) připravený soubor s HTML formulářem
+        // Získání seznamu všech podkategorií (aby se daly vypsat v druhém selectu)
+        $subcategories = $categoryModel->getAllSubcategories();
+
+        // V šabloně book_create.php nyní budeme mít k dispozici pole $categories a $subcategories
         require_once '../app/views/books/book_create.php';
     }
 
@@ -98,7 +103,10 @@ class BookController {
             // $category = htmlspecialchars($_POST['category'] ?? '');
                  // 🛡️ ZMĚNA: Kategorie k nám nyní chodí jako číslo (ID z value atributu selectu)
             $category = (int)($_POST['category'] ?? 0);
-            $subcategory = htmlspecialchars($_POST['subcategory'] ?? '');
+            //$subcategory = htmlspecialchars($_POST['subcategory'] ?? '');
+            // 🛡️ ZMĚNA: Kategorie k nám nyní chodí jako číslo (ID z value atributu selectu)
+            $subcategory = (int)($_POST['subcategory'] ?? 0);
+            
             
             // U číselných hodnot se provádí explicitní přetypování
             $year = (int)($_POST['year'] ?? 0);
@@ -208,19 +216,17 @@ public function delete($id = null) {
 
     // 4. Zobrazení formuláře pro úpravu existující knihy
        // 4. Zobrazení formuláře pro úpravu existující knihy
+    // 4. Zobrazení formuláře pro úpravu existující knihy
     public function edit($id = null) {
-        // 🔒 !!! ZMĚNA: Kontrola, zda je uživatel přihlášen. 
-        // Pokud není, nepustíme ho ani k načítání dat z DB.
+        // 🔒 Kontrola, zda je uživatel přihlášen
         if (!isset($_SESSION['user_id'])) {
             $this->addErrorMessage('Pro úpravu knihy se musíte nejprve přihlásit.');
             header('Location: ' . BASE_URL . '/index.php?url=auth/login');
             exit;
         }
         
-        
-        // Kontrola, zda bylo v URL vůbec předáno nějaké ID
+        // Kontrola, zda bylo v URL předáno ID
         if (!$id) {
-            // Vyvolání červené notifikace pro kritickou chybu
             $this->addErrorMessage('Nebylo zadáno ID knihy k úpravě.');
             header('Location: ' . BASE_URL . '/index.php');
             exit;
@@ -229,38 +235,36 @@ public function delete($id = null) {
         // Načtení potřebných tříd a spojení s databází
         require_once '../app/models/Database.php';
         require_once '../app/models/Book.php';
-         require_once '../app/models/Category.php';
+        require_once '../app/models/Category.php';
 
         $database = new Database();
         $db = $database->getConnection();
 
-        // ZMĚNA: Získání seznamu kategorií
+        // --- NAČTENÍ KATEGORIÍ PRO FORMULÁŘ ---
         $categoryModel = new Category($db);
         $categories = $categoryModel->getAllCategories();
+        $subcategories = $categoryModel->getAllSubcategories(); // Přidáno pro podkategorie
 
         // Získání dat o konkrétní knize
         $bookModel = new Book($db);
-        $book = $bookModel->getById($id); // Proměnná $book nyní obsahuje asociativní pole dat
-
+        $book = $bookModel->getById($id);
 
         // Bezpečnostní kontrola: Zda kniha s daným ID vůbec existuje
         if (!$book) {
-            // Pokud knihu někdo mezitím smazal, nebo uživatel zadal do URL neexistující ID
             $this->addErrorMessage('Požadovaná kniha nebyla v databázi nalezena.');
             header('Location: ' . BASE_URL . '/index.php');
             exit;
         }
 
-        // 🛡️ !!! ZMĚNA: Kontrola vlastnictví (Autorizace).
-        // Ověříme, zda ID přihlášeného uživatele odpovídá ID autora uloženého u knihy.
+        // 🛡️ Kontrola vlastnictví (Autorizace)
         if ($book['created_by'] !== $_SESSION['user_id']) {
             $this->addErrorMessage('Nemáte oprávnění upravovat tuto knihu, protože nejste jejím autorem.');
             header('Location: ' . BASE_URL . '/index.php');
             exit;
         }
 
-        // Pokud je vše v pořádku, načte se připravený soubor s HTML formulářem pro úpravy.
-        // Šablona bude mít automaticky přístup k proměnné $book.
+        // Načtení pohledu (view) pro editaci
+        // Šablona má nyní přístup k $book, $categories a $subcategories
         require_once '../app/views/books/book_edit.php';
     }
 
@@ -305,7 +309,10 @@ public function delete($id = null) {
             // $category = htmlspecialchars($_POST['category'] ?? '');
                  // 🛡️ ZMĚNA: Kategorie k nám nyní chodí jako číslo (ID z value atributu selectu)
             $category = (int)($_POST['category'] ?? 0);
-            $subcategory = htmlspecialchars($_POST['subcategory'] ?? '');
+            //$subcategory = htmlspecialchars($_POST['subcategory'] ?? '');
+            // 🛡️ ZMĚNA: Kategorie k nám nyní chodí jako číslo (ID z value atributu selectu)
+            $subcategory = (int)($_POST['subcategory'] ?? 0);
+            
             $year = (int)($_POST['year'] ?? 0);
             $price = (float)($_POST['price'] ?? 0);
             $link = htmlspecialchars($_POST['link'] ?? '');
