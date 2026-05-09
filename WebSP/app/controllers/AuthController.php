@@ -8,10 +8,10 @@ class AuthController {
     }
 
     // 2. Zpracování dat z registrace
-    public function storeUser() {
+    public function storeUser() { //validace
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
-            // Očištění textových vstupů
+            // Očištění textových vstupů, brana proti xss utoku
             $username = htmlspecialchars($_POST['username'] ?? '');
             $email = htmlspecialchars($_POST['email'] ?? '');
             $firstName = htmlspecialchars($_POST['first_name'] ?? '');

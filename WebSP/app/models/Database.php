@@ -2,12 +2,12 @@
 
 class Database {
     private $host = "localhost";
-    private $db_name = "iron_log_db"; // Název tvé nové fitness databáze
+    private $db_name = "iron_log_db"; // Název fitness databáze
     private $username = "root";
     private $password = "";
-    public $conn;
+    public $conn; //Sem si uložíme to samotné "živé" spojení, až se vytvoří.
 
-    public function getConnection() {
+    public function getConnection() { //Každý model ji volá, aby mohl posílat SQL dotazy.
         
         // Odpojí předchozí připojení pro čistý start
         $this->conn = null;
@@ -33,7 +33,7 @@ class Database {
     }
 }
 
-// --- TESTOVACÍ BLOK (stejný jako ve škole) ---
+// --- TESTOVACÍ BLOK ---
 // Po spuštění souboru v prohlížeči hned uvidíš, jestli ses trefil do hesla a názvu DB.
 $database = new Database();
 $database->getConnection();
