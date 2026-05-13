@@ -52,8 +52,22 @@
                             </div>
                         </div>
                         
-                        <div class="mt-8 text-zinc-600 text-[10px] font-bold uppercase tracking-widest">
-                            Zapsáno v systému: <?= date('d. m. Y H:i', strtotime($workout['created_at'])) ?>
+                        <!-- SPODNÍ PANEL S DATEM A ADMIN FUNKCÍ -->
+                        <div class="mt-8 text-zinc-600 text-[10px] font-bold uppercase tracking-widest flex flex-wrap items-center justify-between gap-4">
+                            <div>
+                                Zapsáno v systému: <?= date('d. m. Y H:i', strtotime($workout['created_at'])) ?>
+                            </div>
+
+                            <?php if (isset($currentUserRole) && $currentUserRole === 'admin'): ?>
+                                <div class="flex items-center bg-red-950/20 px-3 py-1 border border-red-900/30">
+                                    <span class="text-red-900 mr-3">ADMIN PANEL:</span>
+                                    <a href="<?= BASE_URL ?>/index.php?url=user/delete/<?= $workout['created_by'] ?>" 
+                                       onclick="return confirm('POZOR! OPRAVDU CHCETE SMAZAT TOHOTO UŽIVATELE? Tato akce je nevratná.')"
+                                       class="text-red-500 hover:text-white transition-colors italic">
+                                       [ ODSTRANIT AUTORA PROFILU ]
+                                    </a>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
 
