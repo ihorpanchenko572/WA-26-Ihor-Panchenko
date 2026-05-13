@@ -15,5 +15,27 @@
             </div>
         </div>
     </footer>
+
+    <!-- LOGIKA PRO AUTOMATICKÉ MIZENÍ NOTIFIKACÍ -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Najdeme všechny notifikační zprávy s naší třídou alert-msg
+        const messages = document.querySelectorAll('.alert-msg');
+        
+        messages.forEach(function(msg) {
+            // Nastavíme časovač na 5 sekund (5000ms)
+            setTimeout(function() {
+                // Přidáme efekt plynulého mizení přes CSS transition
+                msg.style.transition = "opacity 0.8s ease, transform 0.8s ease";
+                msg.style.opacity = "0";
+                msg.style.transform = "translateX(50px) skewX(-12deg)"; // Zpráva při mizení jakoby odjede doprava
+                
+                // Po dokončení animace (800ms) prvek úplně odstraníme z DOMu
+                setTimeout(() => msg.remove(), 800);
+            }, 5000);
+        });
+    });
+    </script>
+
 </body>
 </html>
