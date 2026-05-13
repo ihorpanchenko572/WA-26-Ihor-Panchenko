@@ -50,14 +50,14 @@ class User {
     }
     
     // 3. Získání uživatele podle ID (hodí se pro zobrazení profilu atd.)
-    public function findById(int $id) {
-        // Zde jsme také přidali nová pole, aby se nám při načtení profilu vypsalo všechno
-        $sql = "SELECT id, username, email, first_name, last_name, nickname, created_at FROM users WHERE id = :id";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([':id' => $id]);
-        
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
+public function findById(int $id) {
+    // PŘIDÁNO: role do SELECTU
+    $sql = "SELECT id, username, email, first_name, last_name, nickname, role, created_at FROM users WHERE id = :id";
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([':id' => $id]);
+    
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
     public function delete($id) {
     $sql = "DELETE FROM users WHERE id = :id";

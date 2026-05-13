@@ -17,30 +17,42 @@ class WorkoutController {
     }
 
     // 2. DETAIL KONKRÉTNÍHO VÝKONU
-    public function show($id = null) {
-        if (!$id) {
-            $this->addErrorMessage('CHYBÍ ID ZÁZNAMU.');
-            header('Location: ' . BASE_URL . '/index.php');
-            exit;
-        }
-
-        require_once '../app/models/Database.php';
-        require_once '../app/models/Workout.php';
-
-        $database = new Database();
-        $db = $database->getConnection();
-
-        $workoutModel = new Workout($db);
-        $workout = $workoutModel->getById($id);
-
-        if (!$workout) {
-            $this->addErrorMessage('TRÉNINK NEBYL NALEZEN.');
-            header('Location: ' . BASE_URL . '/index.php');
-            exit;
-        }
-
-        require_once '../app/views/workouts/workout_show.php';
+  public function show($id = null) {
+    if (!$id) {
+        $this->addErrorMessage('CHYBÍ ID ZÁZNAMU.');
+        header('Location: ' . BASE_URL . '/index.php');
+        exit;
     }
+
+    require_once '../app/models/Database.php';
+    require_once '../app/models/Workout.php';
+    require_once '../app/models/User.php'; // PŘIDÁNO: Potřebujeme model User
+
+    $database = new Database();
+    $db = $database->getConnection();
+
+    $workoutModel = new Workout($db);
+    $workout = $workoutModel->getById($id);
+
+    if (!$workout) {
+        $this->addErrorMessage('TRÉNINK NEBYL NALEZEN.');
+        header('Location: ' . BASE_URL . '/index.php');
+        exit;
+    }
+
+    // --- NOVÁ ČÁST: Zjištění role pro šablonu ---
+    $currentUserRole = 'user'; // Výchozí role
+    if (isset($_SESSION['user_id'])) {
+        $userModel = new User($db);
+        $user = $userModel->findById($_SESSION['user_id']);
+        if ($user) {
+            $currentUserRole = $user['role'] ?? 'user';
+        }
+    }
+    // --------------------------------------------
+
+    require_once '../app/views/workouts/workout_show.php';
+}
 
     // 3. FORMULÁŘ PRO NOVÝ ZÁPIS
    // 3. FORMULÁŘ PRO NOVÝ ZÁPIS (UPRAVENO PRO SVALOVÉ SKUPINY)
