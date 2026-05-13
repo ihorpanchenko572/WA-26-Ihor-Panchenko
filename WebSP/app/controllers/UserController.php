@@ -1,5 +1,8 @@
 <?php
 
+// Tento řádek ručně připojí základní třídu, aby UserController věděl, co má rozšiřovat
+require_once '../app/core/Controller.php';
+
 class UserController extends Controller {
     private $userModel;
 
