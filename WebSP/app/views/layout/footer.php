@@ -16,25 +16,36 @@
         </div>
     </footer>
 
-    <!-- LOGIKA PRO AUTOMATICKÉ MIZENÍ NOTIFIKACÍ -->
+    <!-- JS LOGIKA -->
     <script>
+    // 1. AUTOMATICKÉ MIZENÍ NOTIFIKACÍ
     document.addEventListener('DOMContentLoaded', function() {
-        // Najdeme všechny notifikační zprávy s naší třídou alert-msg
         const messages = document.querySelectorAll('.alert-msg');
-        
         messages.forEach(function(msg) {
-            // Nastavíme časovač na 5 sekund (5000ms)
             setTimeout(function() {
-                // Přidáme efekt plynulého mizení přes CSS transition
                 msg.style.transition = "opacity 0.8s ease, transform 0.8s ease";
                 msg.style.opacity = "0";
-                msg.style.transform = "translateX(50px) skewX(-12deg)"; // Zpráva při mizení jakoby odjede doprava
-                
-                // Po dokončení animace (800ms) prvek úplně odstraníme z DOMu
+                msg.style.transform = "translateX(50px) skewX(-12deg)";
                 setTimeout(() => msg.remove(), 800);
             }, 5000);
         });
     });
+
+    // 2. PŘEPÍNÁNÍ VIDITELNOSTI HESLA
+    function togglePassword(inputId, button) {
+        const input = document.getElementById(inputId);
+        const icon = button.querySelector('svg');
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            button.classList.add('text-lime-500');
+            button.classList.remove('text-zinc-600');
+        } else {
+            input.type = 'password';
+            button.classList.remove('text-lime-500');
+            button.classList.add('text-zinc-600');
+        }
+    }
     </script>
 
 </body>
