@@ -26,7 +26,8 @@ class WorkoutController {
 
     require_once '../app/models/Database.php';
     require_once '../app/models/Workout.php';
-    require_once '../app/models/User.php'; // PŘIDÁNO: Potřebujeme model User
+    require_once '../app/models/User.php';
+    require_once '../app/models/Comment.php'; // KROK 4: Načtení modelu komentářů
 
     $database = new Database();
     $db = $database->getConnection();
@@ -40,8 +41,8 @@ class WorkoutController {
         exit;
     }
 
-    // --- NOVÁ ČÁST: Zjištění role pro šablonu ---
-    $currentUserRole = 'user'; // Výchozí role
+    // --- Zjištění role pro šablonu ---
+    $currentUserRole = 'user'; 
     if (isset($_SESSION['user_id'])) {
         $userModel = new User($db);
         $user = $userModel->findById($_SESSION['user_id']);
@@ -49,7 +50,11 @@ class WorkoutController {
             $currentUserRole = $user['role'] ?? 'user';
         }
     }
-    // --------------------------------------------
+
+    // --- KROK 4: Načtení komentářů pro tento trénink ---
+    $commentModel = new Comment($db);
+    $comments = $commentModel->getByWorkoutId($id);
+    // --------------------------------------------------
 
     require_once '../app/views/workouts/workout_show.php';
 }

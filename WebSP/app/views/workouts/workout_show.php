@@ -51,9 +51,57 @@
                                 <?= !empty($workout['description']) ? nl2br(htmlspecialchars($workout['description'])) : 'Žádné poznámky nebyly zapsány. Příště do toho dej víc!' ?>
                             </div>
                         </div>
+
+                        <div class="mt-16 pt-8 border-t border-zinc-800">
+                            <h3 class="text-xs uppercase font-black text-lime-500 tracking-[0.4em] mb-8 italic">Diskuze v Aréně</h3>
+
+                            <?php if (isset($_SESSION['user_id'])): ?>
+                                <form action="<?= BASE_URL ?>/index.php?url=comment/store" method="post" class="mb-10">
+                                    <input type="hidden" name="workout_id" value="<?= $workout['id'] ?>">
+                                    <textarea name="content" placeholder="Napiš vzkaz bojovníkovi..." required
+                                              class="w-full bg-black border-2 border-zinc-800 focus:border-lime-500 p-4 text-white outline-none transition-all transform -skew-x-2 italic"></textarea>
+                                    <button type="submit" class="mt-4 bg-lime-500 text-black font-black py-2 px-6 transform -skew-x-12 hover:bg-white transition-all uppercase text-xs">
+                                        Odeslat komentář
+                                    </button>
+                                </form>
+                            <?php else: ?>
+                                <p class="text-zinc-600 text-xs uppercase font-bold mb-10 italic">
+                                    Pro přidání komentáře se musíš <a href="<?= BASE_URL ?>/index.php?url=auth/login" class="text-lime-500 border-b border-lime-500/30">přihlásit</a>.
+                                </p>
+                            <?php endif; ?>
+
+                            <div class="space-y-6">
+                                <?php if (!empty($comments)): ?>
+                                    <?php foreach ($comments as $comment): ?>
+                                        <div class="bg-black/40 p-6 border-l-4 border-zinc-800 relative group transform transition-all hover:border-lime-500/50">
+                                            <div class="flex justify-between items-start mb-2">
+                                                <span class="text-lime-500 font-black uppercase italic text-xs tracking-widest">
+                                                    <?= htmlspecialchars($comment['nickname'] ?: $comment['username']) ?>
+                                                </span>
+                                                <span class="text-zinc-600 text-[9px] font-bold uppercase tracking-tighter">
+                                                    <?= date('d. m. Y H:i', strtotime($comment['created_at'])) ?>
+                                                </span>
+                                            </div>
+                                            <p class="text-zinc-400 italic text-sm leading-relaxed">
+                                                <?= nl2br(htmlspecialchars($comment['content'])) ?>
+                                            </p>
+
+                                            <?php if (isset($currentUserRole) && $currentUserRole === 'admin'): ?>
+                                                <a href="<?= BASE_URL ?>/index.php?url=comment/delete/<?= $comment['id'] ?>" 
+                                                   onclick="return confirm('OPRAVDU SMAZAT TENTO KOMENTÁŘ?')"
+                                                   class="absolute top-2 right-2 text-red-600 opacity-0 group-hover:opacity-100 transition-opacity text-[9px] font-black uppercase italic border border-red-900/30 px-2 py-1 bg-black">
+                                                   Smazat
+                                                </a>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <p class="text-zinc-700 text-xs uppercase font-black italic tracking-widest">Zatím žádné ohlasy. Buď první!</p>
+                                <?php endif; ?>
+                            </div>
+                        </div>
                         
-                        <!-- SPODNÍ PANEL S DATEM A ADMIN FUNKCÍ -->
-                        <div class="mt-8 text-zinc-600 text-[10px] font-bold uppercase tracking-widest flex flex-wrap items-center justify-between gap-4">
+                        <div class="mt-12 text-zinc-600 text-[10px] font-bold uppercase tracking-widest flex flex-wrap items-center justify-between gap-4">
                             <div>
                                 Zapsáno v systému: <?= date('d. m. Y H:i', strtotime($workout['created_at'])) ?>
                             </div>
@@ -63,7 +111,7 @@
                                     <span class="text-red-900 mr-3">ADMIN PANEL:</span>
                                     <a href="<?= BASE_URL ?>/index.php?url=user/delete/<?= $workout['created_by'] ?>" 
                                        onclick="return confirm('POZOR! OPRAVDU CHCETE SMAZAT TOHOTO UŽIVATELE? Tato akce je nevratná.')"
-                                       class="text-red-500 hover:text-white transition-colors italic">
+                                       class="text-red-500 hover:text-white transition-colors italic text-[9px]">
                                        [ ODSTRANIT AUTORA PROFILU ]
                                     </a>
                                 </div>
