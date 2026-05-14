@@ -59,17 +59,16 @@
                              class="text-orange-600 hover:text-orange-800 transition-colors underline decoration-orange-200 underline-offset-4">
                                Detail
                                </a>
-        <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] === $book['created_by']): ?>
-            <a href="<?= BASE_URL ?>/index.php?url=book/edit/<?= $book['id'] ?>" 
-               class="text-emerald-600 hover:text-emerald-800 transition-colors underline decoration-emerald-200 underline-offset-4">
-               Upravit
-            </a>
-            <a href="<?= BASE_URL ?>/index.php?url=book/delete/<?= $book['id'] ?>" 
-               onclick="return confirm('Opravdu chcete tuto knihu smazat?')" 
-               class="text-rose-600 hover:text-rose-800 transition-colors underline decoration-rose-200 underline-offset-4">
-               Smazat
-            </a>
-        <?php endif; ?>
+                              <?php 
+                                            // 💡 ZMĚNA: Kontrola administrátora pro frontend
+                                            $isAdmin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1;
+                                            
+                                            // Tlačítka zobrazíme POKUD je autor NEBO je admin
+                                            if (isset($_SESSION['user_id']) && ($_SESSION['user_id'] === $book['created_by'] || $isAdmin)): 
+                                            ?>
+                                                <a href="<?= BASE_URL ?>/index.php?url=book/edit/<?= $book['id'] ?>" class="text-emerald-600 hover:text-emerald-800 transition-colors underline decoration-emerald-200 underline-offset-4">Upravit</a>
+                                                <a href="<?= BASE_URL ?>/index.php?url=book/delete/<?= $book['id'] ?>" onclick="return confirm('Opravdu chcete tuto knihu smazat?')" class="text-rose-600 hover:text-rose-800 transition-colors underline decoration-rose-200 underline-offset-4">Smazat</a>
+                                            <?php endif; ?>
     </div>
 </td>
                                 </tr>

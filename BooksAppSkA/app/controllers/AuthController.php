@@ -98,6 +98,10 @@ class AuthController {
                 
                 // Uložení dat do Session
                 $_SESSION['user_id'] = $user['id'];
+
+                // ZMĚNA: Uložíme do Session i informaci o tom, zda je uživatel admin
+                $_SESSION['is_admin'] = $user['is_admin']; 
+
                 
                 // Priorita pro jméno: 1. Nickname, 2. Username
                 $_SESSION['user_name'] = !empty($user['nickname']) ? $user['nickname'] : $user['username'];
