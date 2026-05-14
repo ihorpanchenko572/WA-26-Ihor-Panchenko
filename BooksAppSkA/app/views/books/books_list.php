@@ -40,6 +40,7 @@
                                 <th class="px-6 py-4 font-semibold uppercase text-xs text-orange-800 tracking-wider text-center">ID</th>
                                 <th class="px-6 py-4 font-semibold uppercase text-xs text-orange-800 tracking-wider">Název knihy</th>
                                 <th class="px-6 py-4 font-semibold uppercase text-xs text-orange-800 tracking-wider">Autor</th>
+                                <th class="px-6 py-4 font-semibold uppercase text-xs text-orange-800 tracking-wider">Kategorie</th>
                                 <th class="px-6 py-4 font-semibold uppercase text-xs text-orange-800 tracking-wider">Rok</th>
                                 <th class="px-6 py-4 font-semibold uppercase text-xs text-orange-800 tracking-wider text-right">Cena</th>
                                 <th class="px-6 py-4 font-semibold uppercase text-xs text-orange-800 tracking-wider text-center">Akce</th>
@@ -51,6 +52,7 @@
                                     <td class="px-6 py-4 text-center text-slate-400 text-sm italic"><?= htmlspecialchars($book['id']) ?></td>
                                     <td class="px-6 py-4 font-medium text-slate-900 group-hover:text-orange-600"><?= htmlspecialchars($book['title']) ?></td>
                                     <td class="px-6 py-4 text-slate-600"><?= htmlspecialchars($book['author']) ?></td>
+                                    <td class="px-6 py-4 text-emerald-400 font-medium"><?= htmlspecialchars($book['category_name'] ?? 'Nezařazeno') ?></td>
                                     <td class="px-6 py-4 text-slate-500 font-mono"><?= htmlspecialchars($book['year']) ?></td>
                                     <td class="px-6 py-4 text-right font-bold text-slate-800"><?= htmlspecialchars($book['price']) ?> Kč</td>
                                     <td class="px-6 py-4 text-center">
