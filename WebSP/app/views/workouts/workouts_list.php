@@ -56,17 +56,29 @@
                            DETAIL
                         </a>
 
-                        <div class="flex space-x-4">
+                        <div class="flex items-center space-x-4">
                             <?php if (isset($_SESSION['user_id']) && ((int)$_SESSION['user_id'] === (int)$w['created_by'] || (isset($currentUserRole) && $currentUserRole === 'admin'))): ?>
                                 
+                                <?php 
+                                    // 🎨 LOGIKA PRO ODLIŠENÍ VLASTNÍHO ZÁPISU OD CIZÍHO
+                                    $isMyOwn = ((int)$_SESSION['user_id'] === (int)$w['created_by']);
+                                    
+                                    // Nastavení CSS tříd podle vlastnictví
+                                    $editColorClass = $isMyOwn ? 'text-lime-500 hover:text-white' : 'text-zinc-500 hover:text-blue-400';
+                                    $deleteColorClass = $isMyOwn ? 'text-lime-700 hover:text-red-500' : 'text-zinc-600 hover:text-red-500';
+                                    $myBadge = $isMyOwn ? '<span class="text-[9px] text-lime-500/40 font-black uppercase italic mr-1 tracking-tighter">[MŮJ]</span>' : '';
+                                ?>
+                                
+                                <?= $myBadge ?>
+                                
                                 <a href="<?= BASE_URL ?>/index.php?url=workout/edit/<?= $w['id'] ?>" 
-                                   class="text-[10px] font-black hover:text-blue-400 transition-all uppercase italic">
+                                   class="text-[10px] font-black transition-all uppercase italic <?= $editColorClass ?>">
                                    Edit
                                 </a>
                                 
                                 <a href="<?= BASE_URL ?>/index.php?url=workout/delete/<?= $w['id'] ?>" 
                                    onclick="return confirm('Smazat tento výkon? Žádná lítost?')" 
-                                   class="text-[10px] font-black hover:text-red-600 transition-all uppercase italic text-zinc-600">
+                                   class="text-[10px] font-black transition-all uppercase italic <?= $deleteColorClass ?>">
                                    Smazat
                                 </a>
 
