@@ -3,18 +3,30 @@
 class WorkoutController {
 
     // 1. VÝPIS VŠECH TRÉNINKŮ (HISTORIE)
-    public function index() {
-        require_once '../app/models/Database.php';
-        require_once '../app/models/Workout.php';
+public function index() {
+    require_once '../app/models/Database.php';
+    require_once '../app/models/Workout.php';
+    require_once '../app/models/User.php'; // PŘIDÁNO: Potřebujeme model User pro zjištění role
 
-        $database = new Database();
-        $db = $database->getConnection();
+    $database = new Database();
+    $db = $database->getConnection();
 
-        $workoutModel = new Workout($db);
-        $workouts = $workoutModel->getAll(); 
-        
-        require_once '../app/views/workouts/workouts_list.php';
+    $workoutModel = new Workout($db);
+    $workouts = $workoutModel->getAll(); 
+    
+    // --- PŘIDÁNO: Zjištění role přihlášeného uživatele pro hlavní přehled ---
+    $currentUserRole = 'user'; // výchozí
+    if (isset($_SESSION['user_id'])) {
+        $userModel = new User($db);
+        $user = $userModel->findById($_SESSION['user_id']);
+        if ($user) {
+            $currentUserRole = $user['role'] ?? 'user';
+        }
     }
+    // -----------------------------------------------------------------------
+    
+    require_once '../app/views/workouts/workouts_list.php';
+}
 
     // 2. DETAIL KONKRÉTNÍHO VÝKONU
   public function show($id = null) {
