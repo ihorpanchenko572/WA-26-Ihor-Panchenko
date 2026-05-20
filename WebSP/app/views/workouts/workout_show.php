@@ -32,16 +32,16 @@
                             <?= htmlspecialchars($workout['exercise_name']) ?>
                         </h2>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 mt-12">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-y-8 gap-x-16 mt-12">
                             <div class="border-l-4 border-lime-500 pl-4">
                                 <span class="block text-zinc-500 uppercase font-black text-[10px] tracking-[0.3em] mb-2">Váha</span>
-                                <span class="text-5xl font-black italic text-white"><?= htmlspecialchars($workout['weight']) ?><span class="text-lime-500 ml-1 text-xl">KG</span></span>
+                                <span class="text-5xl font-black italic text-white whitespace-nowrap"><?= htmlspecialchars($workout['weight']) ?><span class="text-lime-500 ml-2 text-xl">KG</span></span>
                             </div>
-                            <div class="border-l-4 border-zinc-700 pl-4">
+                            <div class="border-l-4 border-zinc-700 pl-6">
                                 <span class="block text-zinc-500 uppercase font-black text-[10px] tracking-[0.3em] mb-2">Série</span>
                                 <span class="text-5xl font-black italic text-white"><?= htmlspecialchars($workout['sets']) ?></span>
                             </div>
-                            <div class="border-l-4 border-zinc-700 pl-4">
+                            <div class="border-l-4 border-zinc-700 pl-6">
                                 <span class="block text-zinc-500 uppercase font-black text-[10px] tracking-[0.3em] mb-2">Opakování</span>
                                 <span class="text-5xl font-black italic text-white"><?= htmlspecialchars($workout['reps']) ?></span>
                             </div>
