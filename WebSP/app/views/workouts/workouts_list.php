@@ -63,13 +63,10 @@
                                     // 🎨 LOGIKA PRO ODLIŠENÍ VLASTNÍHO ZÁPISU OD CIZÍHO
                                     $isMyOwn = ((int)$_SESSION['user_id'] === (int)$w['created_by']);
                                     
-                                    // Nastavení CSS tříd podle vlastnictví
+                                    // Nastavení CSS tříd podle vlastnictví (tvůj svítí limetkově, cizí je decentní)
                                     $editColorClass = $isMyOwn ? 'text-lime-500 hover:text-white' : 'text-zinc-500 hover:text-blue-400';
                                     $deleteColorClass = $isMyOwn ? 'text-lime-700 hover:text-red-500' : 'text-zinc-600 hover:text-red-500';
-                                    $myBadge = $isMyOwn ? '<span class="text-[9px] text-lime-500/40 font-black uppercase italic mr-1 tracking-tighter">[MŮJ]</span>' : '';
                                 ?>
-                                
-                                <?= $myBadge ?>
                                 
                                 <a href="<?= BASE_URL ?>/index.php?url=workout/edit/<?= $w['id'] ?>" 
                                    class="text-[10px] font-black transition-all uppercase italic <?= $editColorClass ?>">
