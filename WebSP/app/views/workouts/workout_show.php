@@ -8,10 +8,12 @@
                 &larr; Zpět do historie
             </a>
             <div class="flex space-x-4">
-                <a href="<?= BASE_URL ?>/index.php?url=workout/edit/<?= $workout['id'] ?>" class="bg-zinc-800 hover:bg-blue-600 text-white px-6 py-2 transform -skew-x-12 font-black text-xs uppercase transition-all">
-                    Upravit zápis
-                </a>
-            </div>
+              <?php if ($workout['created_by'] === $_SESSION['user_id'] || (isset($currentUserRole) && $currentUserRole === 'admin')): ?>
+              <a href="<?= BASE_URL ?>/index.php?url=workout/edit/<?= $workout['id'] ?>" class="bg-zinc-800 hover:bg-blue-600 text-white px-6 py-2 transform -skew-x-12 font-black text-xs uppercase transition-all">
+                 Upravit zápis
+              </a>
+            <?php endif; ?>
+          </div>
         </div>
 
         <div class="bg-zinc-900 border border-zinc-800 shadow-2xl overflow-hidden relative">

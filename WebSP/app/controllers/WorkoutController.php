@@ -132,50 +132,52 @@ class WorkoutController {
     // 5. FORMULÁŘ PRO EDITACI
     // 5. FORMULÁŘ PRO EDITACI (UPRAVENO PRO SVALOVÉ SKUPINY)
     public function edit($id = null) {
-        if (!isset($_SESSION['user_id'])) {
-            $this->addErrorMessage('PRO ÚPRAVU VÝKONU SE MUSÍTE NEJPRVE PŘIHLÁSIT.');
-            header('Location: ' . BASE_URL . '/index.php?url=auth/login');
-            exit;
-        }
-
-        if (!$id) {
-            $this->addErrorMessage('CHYBÍ ID.');
-            header('Location: ' . BASE_URL . '/index.php');
-            exit;
-        }
-
-        require_once '../app/models/Database.php';
-        require_once '../app/models/Workout.php';
-        require_once '../app/models/MuscleGroup.php'; // !!! PŘIDÁNO: Načtení modelu pro svalové skupiny
-
-        $database = new Database();
-        $db = $database->getConnection();
-
-        // 🛡️ ZÍSKÁNÍ DAT O TRÉNINKU
-        $workoutModel = new Workout($db);
-        $workout = $workoutModel->getById($id);
-
-        if (!$workout) {
-            $this->addErrorMessage('ZÁZNAM NENALEZEN.');
-            header('Location: ' . BASE_URL . '/index.php');
-            exit;
-        }
-
-        // 🛡️ Kontrola vlastnictví
-        if ($workout['created_by'] !== $_SESSION['user_id']) {
-            $this->addErrorMessage('NEMÁTE OPRÁVNĚNÍ UPRAVOVAT TENTO VÝKON.');
-            header('Location: ' . BASE_URL . '/index.php');
-            exit;
-        }
-
-        // --- !!! NOVINKA: ZÍSKÁNÍ SEZNAMU VŠECH SVALOVÝCH SKUPIN PRO SELECT ---
-        $mgModel = new MuscleGroup($db);
-        $muscleGroups = $mgModel->getAll(); 
-
-        // Nyní šablona workout_edit.php uvidí jak data tréninku ($workout), 
-        // tak i seznam všech skupin ($muscleGroups)
-        require_once '../app/views/workouts/workout_edit.php';
+    if (!isset($_SESSION['user_id'])) {
+        $this->addErrorMessage('PRO ÚPRAVU VÝKONU SE MUSÍTE NEJPRVE PŘIHLÁSIT.');
+        header('Location: ' . BASE_URL . '/index.php?url=auth/login');
+        exit;
     }
+
+    if (!$id) {
+        $this->addErrorMessage('CHYBÍ ID.');
+        header('Location: ' . BASE_URL . '/index.php');
+        exit;
+    }
+
+    require_once '../app/models/Database.php';
+    require_once '../app/models/Workout.php';
+    require_once '../app/models/MuscleGroup.php';
+    require_once '../app/models/User.php'; // PŘIDÁNO: Potřebujeme zjistit roli
+
+    $database = new Database();
+    $db = $database->getConnection();
+
+    $workoutModel = new Workout($db);
+    $workout = $workoutModel->getById($id);
+
+    if (!$workout) {
+        $this->addErrorMessage('ZÁZNAM NENALEZEN.');
+        header('Location: ' . BASE_URL . '/index.php');
+        exit;
+    }
+
+    // 🛡️ ZJIŠTĚNÍ ROLE AKTUÁLNÍHO UŽIVATELE
+    $userModel = new User($db);
+    $currentUser = $userModel->findById($_SESSION['user_id']);
+    $isAdmin = ($currentUser && $currentUser['role'] === 'admin');
+
+    // 🛡️ KONTROLA OPRÁVNĚNÍ (Majitel NEBO Admin)
+    if ($workout['created_by'] !== $_SESSION['user_id'] && !$isAdmin) {
+        $this->addErrorMessage('NEMÁTE OPRÁVNĚNÍ UPRAVOVAT TENTO VÝKON.');
+        header('Location: ' . BASE_URL . '/index.php');
+        exit;
+    }
+
+    $mgModel = new MuscleGroup($db);
+    $muscleGroups = $mgModel->getAll(); 
+
+    require_once '../app/views/workouts/workout_edit.php';
+}
     // 6. AKTUALIZACE STÁVAJÍCÍHO ZÁZNAMU
     // 6. AKTUALIZACE STÁVAJÍCÍHO ZÁZNAMU
     public function update($id = null) {
@@ -248,51 +250,57 @@ class WorkoutController {
 
     // 7. SMAZÁNÍ VÝKONU
     public function delete($id = null) {
-        if (!isset($_SESSION['user_id'])) {
-            $this->addErrorMessage('PRO SMAZÁNÍ SE MUSÍTE PŘIHLÁSIT.');
-            header('Location: ' . BASE_URL . '/index.php?url=auth/login');
-            exit;
-        }
+    if (!isset($_SESSION['user_id'])) {
+        $this->addErrorMessage('PRO SMAZÁNÍ SE MUSÍTE PŘIHLÁSIT.');
+        header('Location: ' . BASE_URL . '/index.php?url=auth/login');
+        exit;
+    }
 
-        if (!$id) {
-            $this->addErrorMessage('CHYBÍ ID ZÁZNAMU.');
-            header('Location: ' . BASE_URL . '/index.php');
-            exit;
-        }
-
-        require_once '../app/models/Database.php';
-        require_once '../app/models/Workout.php';
-
-        $database = new Database();
-        $db = $database->getConnection();
-        $workoutModel = new Workout($db);
-
-        $workout = $workoutModel->getById($id);
-
-        if (!$workout) {
-            $this->addErrorMessage('ZÁZNAM NEBYL NALEZEN.');
-            header('Location: ' . BASE_URL . '/index.php');
-            exit;
-        }
-
-        // 🛡️ OPRAVENO: Kontrola vlastnictví přes created_by
-        if ($workout['created_by'] !== $_SESSION['user_id']) {
-            $this->addErrorMessage('NEMÁTE OPRÁVNĚNÍ SMAZAT TENTO ZÁZNAM.');
-            header('Location: ' . BASE_URL . '/index.php');
-            exit;
-        }
-
-        $isDeleted = $workoutModel->delete($id);
-
-        if ($isDeleted) {
-            $this->addSuccessMessage('VÁŠ VÝKON BYL TRVALE SMAZÁN.');
-        } else {
-            $this->addErrorMessage('NASTALA CHYBA PŘI MAZÁNÍ.');
-        }
-
+    if (!$id) {
+        $this->addErrorMessage('CHYBÍ ID ZÁZNAMU.');
         header('Location: ' . BASE_URL . '/index.php');
         exit;
     }
+
+    require_once '../app/models/Database.php';
+    require_once '../app/models/Workout.php';
+    require_once '../app/models/User.php'; // PŘIDÁNO: Potřebujeme zjistit roli
+
+    $database = new Database();
+    $db = $database->getConnection();
+    $workoutModel = new Workout($db);
+
+    $workout = $workoutModel->getById($id);
+
+    if (!$workout) {
+        $this->addErrorMessage('ZÁZNAM NEBYL NALEZEN.');
+        header('Location: ' . BASE_URL . '/index.php');
+        exit;
+    }
+
+    // 🛡️ ZJIŠTĚNÍ ROLE AKTUÁLNÍHO UŽIVATELE
+    $userModel = new User($db);
+    $currentUser = $userModel->findById($_SESSION['user_id']);
+    $isAdmin = ($currentUser && $currentUser['role'] === 'admin');
+
+    // 🛡️ KONTROLA OPRÁVNĚNÍ (Majitel NEBO Admin)
+    if ($workout['created_by'] !== $_SESSION['user_id'] && !$isAdmin) {
+        $this->addErrorMessage('NEMÁTE OPRÁVNĚNÍ SMAZAT TENTO ZÁZNAM.');
+        header('Location: ' . BASE_URL . '/index.php');
+        exit;
+    }
+
+    $isDeleted = $workoutModel->delete($id);
+
+    if ($isDeleted) {
+        $this->addSuccessMessage('ZÁZNAM BYL TRVALE ODSTRANĚN.');
+    } else {
+        $this->addErrorMessage('NASTALA CHYBA PŘI MAZÁNÍ.');
+    }
+
+    header('Location: ' . BASE_URL . '/index.php');
+    exit;
+}
 
     // --- POMOCNÉ METODY ---
 
