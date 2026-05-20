@@ -18,7 +18,6 @@
 </head>
 <body class="bg-[#080808] text-zinc-100 min-h-screen font-sans flex flex-col">
 
-    <!-- KONTEJNER PRO NOTIFIKACE (Fixní vpravo nahoře) -->
     <?php if (isset($_SESSION['messages']) && !empty($_SESSION['messages'])): ?>
         <div class="fixed top-5 right-5 z-[100] space-y-4 w-full max-w-[320px]">
             <?php foreach ($_SESSION['messages'] as $type => $messages): ?>
@@ -57,6 +56,16 @@
                     </li>
 
                     <?php if (isset($_SESSION['user_id'])): ?>
+                        <li>
+                            <?php 
+                                $isStatsActive = (isset($_GET['url']) && $_GET['url'] === 'workout/stats');
+                                $statsClass = $isStatsActive ? 'text-lime-500' : 'text-zinc-400 hover:text-white';
+                            ?>
+                            <a href="<?= BASE_URL ?>/index.php?url=workout/stats" class="transition-colors <?= $statsClass ?>">
+                                Statistiky
+                            </a>
+                        </li>
+
                         <li>
                             <a href="<?= BASE_URL ?>/index.php?url=workout/create" 
                                class="bg-lime-500 text-black px-6 py-2 transform -skew-x-12 hover:bg-white transition-all shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)]">

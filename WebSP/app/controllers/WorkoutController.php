@@ -368,4 +368,27 @@ public function index() {
         }
         return $uploadedFiles;
     }
+    public function stats() {
+    require_once '../app/models/Database.php';
+    require_once '../app/models/Workout.php';
+
+    $database = new Database();
+    $db = $database->getConnection();
+
+    $workoutModel = new Workout($db);
+    $statsData = $workoutModel->getWeightStats();
+
+    // Připravíme pole pro dny a váhy, které dosadíme do JavaScriptu
+    $labels = [];
+    $weights = [];
+
+    foreach ($statsData as $row) {
+        // Zformátujeme datum na hezčí český formát (DD.MM.)
+        $labels[] = date('d.m.', strtotime($row['date']));
+        $weights[] = (int)$row['total_weight'];
+    }
+
+    // Načteme pohled se statistikami
+    require_once '../app/views/workouts/workout_stats.php';
+  }
 }

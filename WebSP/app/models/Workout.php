@@ -125,4 +125,17 @@ public function getAll($muscleGroupId = null) {
         
         return $stmt->execute([':id' => $id]);
     }
+    public function getWeightStats() {
+    // SQL spočítá celkovou váhu (weight * sets * reps) pro každý den
+    // Použijeme DATE(), aby se odřízl čas a seskupovalo se čistě podle dnů
+    $sql = "SELECT DATE(workout_date) as date, SUM(weight * sets * reps) as total_weight 
+            FROM workouts 
+            GROUP BY DATE(workout_date) 
+            ORDER BY DATE(workout_date) ASC 
+            LIMIT 30"; // Vezmeme posledních 30 dní s aktivitou
+            
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
 }
