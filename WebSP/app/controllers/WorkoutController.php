@@ -6,15 +6,24 @@ class WorkoutController {
 public function index() {
     require_once '../app/models/Database.php';
     require_once '../app/models/Workout.php';
-    require_once '../app/models/User.php'; // PŘIDÁNO: Potřebujeme model User pro zjištění role
+    require_once '../app/models/User.php';
+    require_once '../app/models/MuscleGroup.php'; // PŘIDÁNO: Potřebujeme model svalových skupin
 
     $database = new Database();
     $db = $database->getConnection();
 
+    // 1. Zjistíme, jestli uživatel kliknul na nějaký filtr v URL (např. &muscle_group_id=3)
+    $selectedMuscleGroup = isset($_GET['muscle_group_id']) ? (int)$_GET['muscle_group_id'] : null;
+
+    // 2. Načteme tréninky (pokud je vybraný filtr, getAll ho aplikuje podle ID)
     $workoutModel = new Workout($db);
-    $workouts = $workoutModel->getAll(); 
+    $workouts = $workoutModel->getAll($selectedMuscleGroup); 
+
+    // 3. Načteme všechny svalové skupiny z DB pro vykreslení tlačítek filtru
+    $mgModel = new MuscleGroup($db);
+    $muscleGroups = $mgModel->getAll();
     
-    // --- PŘIDÁNO: Zjištění role přihlášeného uživatele pro hlavní přehled ---
+    // --- Zjištění role přihlášeného uživatele pro hlavní přehled ---
     $currentUserRole = 'user'; // výchozí
     if (isset($_SESSION['user_id'])) {
         $userModel = new User($db);

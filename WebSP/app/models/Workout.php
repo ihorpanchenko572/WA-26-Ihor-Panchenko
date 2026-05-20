@@ -11,14 +11,30 @@ class Workout {
     /**
      * Získání všech tréninků z databáze (od nejnovějších)
      */
-    public function getAll() {
-        $sql = "SELECT * FROM workouts ORDER BY workout_date DESC, id DESC";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute();
-        
-        // Vrací pole všech tréninků
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+public function getAll($muscleGroupId = null) {
+    // Spojíme workouts s tabulkou muscle_groups podle ID, abychom získali textový název (name) jako 'muscle_group'
+    $sql = "SELECT w.*, m.name as muscle_group 
+            FROM workouts w
+            LEFT JOIN muscle_groups m ON w.muscle_group = m.id";
+            
+    // Pokud uživatel vybral filtr, filtrujeme podle ID svalové skupiny
+    if ($muscleGroupId) {
+        $sql .= " WHERE w.muscle_group = :muscle_group_id";
     }
+    
+    // Seřadíme tréninky od nejnověji vytvořených
+    $sql .= " ORDER BY w.created_at DESC";
+    
+    $stmt = $this->db->prepare($sql);
+    
+    // Pokud máme filtr, bezpečně navážeme integer hodnotu (obrana proti SQL Injection)
+    if ($muscleGroupId) {
+        $stmt->bindValue(':muscle_group_id', (int)$muscleGroupId, PDO::PARAM_INT);
+    }
+    
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
     /**
      * Získání jednoho konkrétního tréninku podle jeho ID

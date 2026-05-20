@@ -13,10 +13,32 @@
         </div>
     </div>
 
+    <div class="mb-10 bg-zinc-950 p-4 border border-zinc-900 flex flex-wrap gap-3 items-center transform -skew-x-2">
+        <span class="text-[10px] font-black uppercase tracking-widest text-zinc-600 mr-2 italic">Filtr arény:</span>
+        
+        <a href="<?= BASE_URL ?>/index.php" 
+           class="px-4 py-1.5 text-xs font-black uppercase italic tracking-wider transition-all <?= !isset($_GET['muscle_group_id']) ? 'bg-lime-500 text-black' : 'bg-zinc-900 text-zinc-400 hover:text-white' ?>">
+            Všechno
+        </a>
+
+        <?php if (!empty($muscleGroups)): ?>
+            <?php foreach ($muscleGroups as $mg): ?>
+                <?php 
+                    $isActive = (isset($_GET['muscle_group_id']) && (int)$_GET['muscle_group_id'] === (int)$mg['id']);
+                    $btnClass = $isActive ? 'bg-lime-500 text-black' : 'bg-zinc-900 text-zinc-400 hover:text-white';
+                ?>
+                <a href="<?= BASE_URL ?>/index.php?url=workout/index&muscle_group_id=<?= $mg['id'] ?>" 
+                   class="px-4 py-1.5 text-xs font-black uppercase italic tracking-wider transition-all <?= $btnClass ?>">
+                    <?= htmlspecialchars($mg['name']) ?>
+                </a>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </div>
+
     <?php if (empty($workouts)): ?>
         <div class="border-2 border-dashed border-zinc-800 p-20 text-center">
-            <p class="text-zinc-500 uppercase tracking-widest font-bold mb-4">Zatím jsi nic nezvedl. Koukej začít!</p>
-            <a href="<?= BASE_URL ?>/index.php?url=workout/create" class="text-lime-500 font-black border-b-2 border-lime-500 pb-1 hover:text-white hover:border-white transition-all">ZAPSAT PRVNÍ TRÉNINK</a>
+            <p class="text-zinc-500 uppercase tracking-widest font-bold mb-4">Zatím jsi nic nezvedl, nebo žádný výkon neodpovídá filtru!</p>
+            <a href="<?= BASE_URL ?>/index.php?url=workout/create" class="text-lime-500 font-black border-b-2 border-lime-500 pb-1 hover:text-white hover:border-white transition-all">ZAPSAT NOVÝ TRÉNINK</a>
         </div>
     <?php else: ?>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
