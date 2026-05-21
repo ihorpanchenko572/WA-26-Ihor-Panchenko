@@ -101,12 +101,12 @@ class AuthController {
 
                 // ZMĚNA: Uložíme do Session i informaci o tom, zda je uživatel admin
                 $_SESSION['is_admin'] = $user['is_admin']; 
-
                 
                 // Priorita pro jméno: 1. Nickname, 2. Username
                 $_SESSION['user_name'] = !empty($user['nickname']) ? $user['nickname'] : $user['username'];
 
-                $this->addSuccessMessage('VÍTEJ V ARÉNĚ, ' . $_SESSION['user_name'] . '!');
+                // ÚPRAVA TEXTU NA KNIHOVNU
+                $this->addSuccessMessage('VÍTEJ V KNIHOVNĚ, ' . $_SESSION['user_name'] . '!');
                 header('Location: ' . BASE_URL . '/index.php');
                 exit;
                 
@@ -122,6 +122,7 @@ class AuthController {
     public function logout() {
         unset($_SESSION['user_id']);
         unset($_SESSION['user_name']);
+        unset($_SESSION['is_admin']); // DOPLNĚNO: Vyčištění admin příznaku při odhlášení
         
         $this->addSuccessMessage('BYL JSI ODHLÁŠEN. PŘIĎ ZAS!');
         header('Location: ' . BASE_URL . '/index.php');
