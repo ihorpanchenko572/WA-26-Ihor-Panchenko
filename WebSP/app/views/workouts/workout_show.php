@@ -138,7 +138,7 @@
                                         <div class="group relative overflow-hidden border-2 border-zinc-800 hover:border-lime-500 transition-all shadow-xl">
                                             <img src="<?= BASE_URL ?>/uploads/<?= htmlspecialchars($img) ?>" 
                                                  alt="Workout image" 
-                                                 class="w-full h-auto object-cover filter grayscale group-hover:grayscale-0 transition-all duration-500">
+                                                 class="w-full h-auto object-cover transition-all duration-500">
                                             <div class="absolute inset-0 bg-lime-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                         </div>
                                     <?php endforeach; 
