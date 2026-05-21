@@ -1,4 +1,4 @@
- <?php require_once '../app/views/layout/header.php'; ?>
+<?php require_once '../app/views/layout/header.php'; ?>
     <main class="container mx-auto px-6 py-10 flex-grow">
         
         <div class="max-w-3xl mx-auto">
@@ -28,7 +28,7 @@
                         </div>
                         
                         <div>
-                            <label for="isbn" class="block text-xs font-bold text-orange-700 mb-1 uppercase tracking-wider">ISBN <span class="text-rose-500">*</span></label>
+                            <label id="isbn_label" for="isbn" class="block text-xs font-bold text-orange-700 mb-1 uppercase tracking-wider">ISBN <span class="text-rose-500">*</span></label>
                             <input type="text" id="isbn" name="isbn" 
                                    class="w-full bg-orange-50/30 border border-orange-200 rounded-md px-4 py-2 text-slate-800 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors">
                         </div>
@@ -40,45 +40,40 @@
                         </div>
                         
                         <div>
-    <label for="category">Kategorie *</label>
-    <!-- ZMĚNA: Použití select místo input a iterace přes $categories -->
-    <select id="category" name="category" required>
-        <option value="">-- Vyberte kategorii --</option>
-        
-        <?php foreach ($categories as $cat): ?>
-            <!-- Do value ukládáme ID kategorie (to se odešle do DB), ale uživateli zobrazíme název -->
-            <option value="<?= htmlspecialchars($cat['id']) ?>">
-                <?= htmlspecialchars($cat['name']) ?>
-            </option>
-        <?php endforeach; ?>
-        
-    </select>
-</div>
+                            <label for="category" class="block text-xs font-bold text-orange-700 mb-1 uppercase tracking-wider">Kategorie <span class="text-rose-500">*</span></label>
+                            <div class="relative">
+                                <select id="category" name="category" required
+                                        class="w-full bg-orange-50/30 border border-orange-200 rounded-md px-4 py-2 text-slate-800 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all appearance-none cursor-pointer">
+                                    <option value="">-- Vyberte kategorii --</option>
+                                    <?php foreach ($categories as $cat): ?>
+                                        <option value="<?= htmlspecialchars($cat['id']) ?>">
+                                            <?= htmlspecialchars($cat['name']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-orange-600/70">
+                                    <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" /></svg>
+                                </div>
+                            </div>
+                        </div>
                         
-                       <div class="md:col-span-1">
-    <label for="subcategory" class="block text-[11px] font-bold text-slate-500 mb-1 uppercase tracking-wider">
-        Podkategorie
-    </label>
-    
-    <div class="relative">
-        <select id="subcategory" name="subcategory" 
-                class="w-full bg-slate-800 border border-slate-700 rounded-md px-4 py-2 text-slate-200 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all appearance-none cursor-pointer">
-            
-            <option value="" class="bg-slate-900 text-slate-400 italic">-- Vyberte podkategorii (volitelné) --</option>
-            
-            <?php foreach ($subcategories as $sub): ?>
-                <option value="<?= htmlspecialchars($sub['id']) ?>" class="bg-slate-900 text-slate-200">
-                    <?= htmlspecialchars($sub['name']) ?>
-                </option>
-            <?php endforeach; ?>
-            
-        </select>
-        <!-- Šipka pro select (volitelné, pro lepší vzhled) -->
-        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
-            <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" /></svg>
-        </div>
-    </div>
-</div>
+                        <div>
+                            <label for="subcategory" class="block text-xs font-bold text-orange-700 mb-1 uppercase tracking-wider">Podkategorie</label>
+                            <div class="relative">
+                                <select id="subcategory" name="subcategory" 
+                                        class="w-full bg-orange-50/30 border border-orange-200 rounded-md px-4 py-2 text-slate-800 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all appearance-none cursor-pointer">
+                                    <option value="" class="text-slate-400 italic">-- Vyberte podkategorii (volitelné) --</option>
+                                    <?php foreach ($subcategories as $sub): ?>
+                                        <option value="<?= htmlspecialchars($sub['id']) ?>">
+                                            <?= htmlspecialchars($sub['name']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-orange-600/70">
+                                    <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" /></svg>
+                                </div>
+                            </div>
+                        </div>
                         
                         <div>
                             <label for="price" class="block text-xs font-bold text-orange-700 mb-1 uppercase tracking-wider">Cena knihy (Kč)</label>
@@ -99,17 +94,17 @@
                         </div>    
                         
                         <div class="md:col-span-2">
-    <label class="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">Obrázky knihy</label>
-    <div class="w-full">
-        <label for="images" class="flex flex-col items-center justify-center w-full h-24 border-2 border-slate-600 border-dashed rounded-lg cursor-pointer bg-slate-800/30 hover:bg-slate-700/50 hover:border-blue-400 transition-colors">
-            <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                <span id="file-title" class="text-sm text-slate-400 font-semibold">Klikni pro výběr souborů</span>
-                <span id="file-info" class="text-xs text-slate-500 mt-1 text-center px-4">Žádné soubory nebyly vybrány</span>
-            </div>
-            <input type="file" id="images" name="images[]" multiple accept="image/*" class="hidden">
-        </label>
-    </div>
-</div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">Obrázky knihy</label>
+                            <div class="w-full">
+                                <label for="images" class="flex flex-col items-center justify-center w-full h-24 border-2 border-orange-300 border-dashed rounded-lg cursor-pointer bg-orange-50/20 hover:bg-orange-50/50 hover:border-orange-500 transition-colors">
+                                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                        <span id="file-title" class="text-sm text-orange-700 font-semibold">Klikni pro výběr souborů</span>
+                                        <span id="file-info" class="text-xs text-slate-400 mt-1 text-center px-4">Žádné soubory nebyly vybrány</span>
+                                    </div>
+                                    <input type="file" id="images" name="images[]" multiple accept="image/*" class="hidden">
+                                </label>
+                            </div>
+                        </div>
                         
                         <div class="md:col-span-2 mt-4">
                             <button type="submit" 
@@ -122,34 +117,30 @@
                 </form>
             </div>
         </div>
-        <script>
-    // Najdeme naše HTML prvky podle ID
-    const fileInput = document.getElementById('images');
-    const fileTitle = document.getElementById('file-title');
-    const fileInfo = document.getElementById('file-info');
-
-    // Posloucháme událost 'change' (změna hodnoty v inputu)
-    fileInput.addEventListener('change', function(event) {
-        const files = event.target.files;
         
-        if (files.length === 0) {
-            // Uživatel výběr zrušil
-            fileTitle.textContent = 'Klikněte pro výběr souborů';
-            fileTitle.className = 'text-sm text-slate-400 font-semibold';
-            fileInfo.textContent = 'Žádné soubory nebyly vybrány';
-        } else if (files.length === 1) {
-            // Vybrán 1 soubor - ukážeme jeho název
-            fileTitle.textContent = 'Soubor připraven';
-            fileTitle.className = 'text-sm text-blue-400 font-bold';
-            fileInfo.textContent = files[0].name;
-        } else {
-            // Vybráno více souborů - ukážeme počet
-            fileTitle.textContent = 'Soubory připraveny';
-            fileTitle.className = 'text-sm text-blue-400 font-bold';
-            fileInfo.textContent = 'Vybráno celkem: ' + files.length + ' souborů';
-        }
-    });
-</script>
+        <script>
+            const fileInput = document.getElementById('images');
+            const fileTitle = document.getElementById('file-title');
+            const fileInfo = document.getElementById('file-info');
+
+            fileInput.addEventListener('change', function(event) {
+                const files = event.target.files;
+                
+                if (files.length === 0) {
+                    fileTitle.textContent = 'Klikněte pro výběr souborů';
+                    fileTitle.className = 'text-sm text-orange-700 font-semibold';
+                    fileInfo.textContent = 'Žádné soubory nebyly vybrány';
+                } else if (files.length === 1) {
+                    fileTitle.textContent = 'Soubor připraven';
+                    fileTitle.className = 'text-sm text-orange-600 font-bold';
+                    fileInfo.textContent = files[0].name;
+                } else {
+                    fileTitle.textContent = 'Soubory připraveny';
+                    fileTitle.className = 'text-sm text-orange-600 font-bold';
+                    fileInfo.textContent = 'Vybráno celkem: ' + files.length + ' souborů';
+                }
+            });
+        </script>
     </main>
 
     <?php require_once '../app/views/layout/footer.php'; ?>
