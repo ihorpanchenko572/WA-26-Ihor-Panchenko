@@ -1,4 +1,4 @@
- <?php require_once '../app/views/layout/header.php'; ?>
+<?php require_once '../app/views/layout/header.php'; ?>
 
     <main class="container mx-auto px-6 py-10">
         
@@ -52,27 +52,45 @@
                                     <td class="px-6 py-4 text-center text-slate-400 text-sm italic"><?= htmlspecialchars($book['id']) ?></td>
                                     <td class="px-6 py-4 font-medium text-slate-900 group-hover:text-orange-600"><?= htmlspecialchars($book['title']) ?></td>
                                     <td class="px-6 py-4 text-slate-600"><?= htmlspecialchars($book['author']) ?></td>
-                                    <td class="px-6 py-4 text-emerald-400 font-medium"><?= htmlspecialchars($book['category_name'] ?? 'Nezařazeno') ?></td>
+                                    <td class="px-6 py-4 text-emerald-600 font-medium"><?= htmlspecialchars($book['category_name'] ?? 'Nezařazeno') ?></td>
                                     <td class="px-6 py-4 text-slate-500 font-mono"><?= htmlspecialchars($book['year']) ?></td>
                                     <td class="px-6 py-4 text-right font-bold text-slate-800"><?= htmlspecialchars($book['price']) ?> Kč</td>
                                     <td class="px-6 py-4 text-center">
-                     <div class="flex justify-center space-x-3 text-sm">
-                          <a href="<?= BASE_URL ?>/index.php?url=book/show/<?= $book['id'] ?>" 
-                             class="text-orange-600 hover:text-orange-800 transition-colors underline decoration-orange-200 underline-offset-4">
-                               Detail
-                               </a>
-                              <?php 
-                                            // 💡 ZMĚNA: Kontrola administrátora pro frontend
+                                        <div class="flex justify-center items-center space-x-2 text-xs">
+                                            <a href="<?= BASE_URL ?>/index.php?url=book/show/<?= $book['id'] ?>" 
+                                               class="text-orange-600 hover:text-orange-800 transition-colors underline decoration-orange-200 underline-offset-4 mr-2 font-semibold">
+                                                Detail
+                                            </a>
+                                            
+                                            <?php 
                                             $isAdmin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1;
                                             
-                                            // Tlačítka zobrazíme POKUD je autor NEBO je admin
                                             if (isset($_SESSION['user_id']) && ($_SESSION['user_id'] === $book['created_by'] || $isAdmin)): 
+                                                // Logika vizuálního odlišení: Je to moje vlastní kniha?
+                                                $isMyBook = ($_SESSION['user_id'] === $book['created_by']);
+
+                                                // Nastavení Tailwind tříd podle vlastnictví
+                                                $editClasses = $isMyBook 
+                                                    ? 'bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-700' 
+                                                    : 'bg-slate-200 hover:bg-slate-300 text-slate-700 border border-slate-300';
+
+                                                $deleteClasses = $isMyBook 
+                                                    ? 'bg-rose-600 hover:bg-rose-500 text-white border border-rose-700' 
+                                                    : 'bg-slate-700 hover:bg-slate-600 text-slate-100 border border-slate-800';
                                             ?>
-                                                <a href="<?= BASE_URL ?>/index.php?url=book/edit/<?= $book['id'] ?>" class="text-emerald-600 hover:text-emerald-800 transition-colors underline decoration-emerald-200 underline-offset-4">Upravit</a>
-                                                <a href="<?= BASE_URL ?>/index.php?url=book/delete/<?= $book['id'] ?>" onclick="return confirm('Opravdu chcete tuto knihu smazat?')" class="text-rose-600 hover:text-rose-800 transition-colors underline decoration-rose-200 underline-offset-4">Smazat</a>
+                                                <a href="<?= BASE_URL ?>/index.php?url=book/edit/<?= $book['id'] ?>" 
+                                                   class="<?= $editClasses ?> px-3 py-1.5 rounded font-bold shadow-sm transition-all uppercase tracking-wider text-[10px]">
+                                                    Upravit <?= !$isMyBook ? '<span class="text-[9px] font-normal lowercase opacity-75">(cizí)</span>' : '' ?>
+                                                </a>
+                                                
+                                                <a href="<?= BASE_URL ?>/index.php?url=book/delete/<?= $book['id'] ?>" 
+                                                   onclick="return confirm('Opravdu chcete tuto knihu smazat?')" 
+                                                   class="<?= $deleteClasses ?> px-3 py-1.5 rounded font-bold shadow-sm transition-all uppercase tracking-wider text-[10px]">
+                                                    Smazat
+                                                </a>
                                             <?php endif; ?>
-    </div>
-</td>
+                                        </div>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -82,4 +100,4 @@
         </div>
     </main>
 
-     <?php require_once '../app/views/layout/footer.php'; ?>
+<?php require_once '../app/views/layout/footer.php'; ?>
