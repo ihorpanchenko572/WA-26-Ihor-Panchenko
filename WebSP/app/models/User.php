@@ -50,18 +50,48 @@ class User {
     }
     
     // 3. Získání uživatele podle ID (hodí se pro zobrazení profilu atd.)
-public function findById(int $id) {
-    // PŘIDÁNO: role do SELECTU
-    $sql = "SELECT id, username, email, first_name, last_name, nickname, role, created_at FROM users WHERE id = :id";
-    $stmt = $this->db->prepare($sql);
-    $stmt->execute([':id' => $id]);
-    
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
+    public function findById(int $id) {
+        // PŘIDÁNO: role do SELECTU
+        $sql = "SELECT id, username, email, first_name, last_name, nickname, role, created_at FROM users WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':id' => $id]);
+        
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
+    // 4. Smazání uživatele z pozice admina
     public function delete($id) {
-    $sql = "DELETE FROM users WHERE id = :id";
-    $stmt = $this->db->prepare($sql);
-    return $stmt->execute([':id' => $id]);
-     }
+        $sql = "DELETE FROM users WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([':id' => $id]);
+    }
+
+    // 5. DOPLNĚNO: Aktualizace profilu bojovníka (včetně rozšířených polí)
+    public function updateProfile(
+        int $id, 
+        string $username, 
+        string $email, 
+        ?string $firstName = null, 
+        ?string $lastName = null, 
+        ?string $nickname = null
+    ): bool {
+        $sql = "UPDATE users 
+                SET username = :username, 
+                    email = :email, 
+                    first_name = :first_name, 
+                    last_name = :last_name, 
+                    nickname = :nickname 
+                WHERE id = :id";
+                
+        $stmt = $this->db->prepare($sql);
+        
+        return $stmt->execute([
+            ':username' => $username,
+            ':email' => $email,
+            ':first_name' => $firstName,
+            ':last_name' => $lastName,
+            ':nickname' => $nickname,
+            ':id' => $id
+        ]);
+    }
 }

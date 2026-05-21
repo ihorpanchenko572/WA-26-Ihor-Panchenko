@@ -72,9 +72,14 @@
                                 + NOVÝ VÝKON
                             </a>
                         </li>
+                        
                         <li class="hidden lg:block text-zinc-500 border-l border-zinc-800 pl-6 lowercase not-italic tracking-normal font-normal">
-                            bojovník: <span class="text-lime-500 font-black uppercase italic tracking-tighter ml-1"><?= htmlspecialchars($_SESSION['user_name']) ?></span>
+                            bojovník: 
+                            <a href="<?= BASE_URL ?>/index.php?url=user/profile" class="text-lime-500 hover:text-white font-black uppercase italic tracking-tighter ml-1 transition-colors">
+                                <?= htmlspecialchars($_SESSION['user_name']) ?>
+                            </a>
                         </li>
+                        
                         <li>
                             <a href="<?= BASE_URL ?>/index.php?url=auth/logout" class="text-red-600 hover:text-white transition-colors">
                                 Odchod
