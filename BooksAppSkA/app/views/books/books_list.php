@@ -56,9 +56,9 @@
                                     <td class="px-6 py-4 text-slate-500 font-mono"><?= htmlspecialchars($book['year']) ?></td>
                                     <td class="px-6 py-4 text-right font-bold text-slate-800"><?= htmlspecialchars($book['price']) ?> Kč</td>
                                     <td class="px-6 py-4 text-center">
-                                        <div class="flex justify-center items-center space-x-2 text-xs">
+                                        <div class="flex justify-center items-center space-x-3 text-xs">
                                             <a href="<?= BASE_URL ?>/index.php?url=book/show/<?= $book['id'] ?>" 
-                                               class="text-orange-600 hover:text-orange-800 transition-colors underline decoration-orange-200 underline-offset-4 mr-2 font-semibold">
+                                               class="text-orange-600 hover:text-orange-800 transition-colors underline decoration-orange-200 underline-offset-4 font-semibold">
                                                 Detail
                                             </a>
                                             
@@ -66,26 +66,25 @@
                                             $isAdmin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1;
                                             
                                             if (isset($_SESSION['user_id']) && ($_SESSION['user_id'] === $book['created_by'] || $isAdmin)): 
-                                                // Logika vizuálního odlišení: Je to moje vlastní kniha?
                                                 $isMyBook = ($_SESSION['user_id'] === $book['created_by']);
 
-                                                // Nastavení Tailwind tříd podle vlastnictví
+                                                // MINIMALISTICKÝ STYL: Tenké rámečky a jemné barvy
                                                 $editClasses = $isMyBook 
-                                                    ? 'bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-700' 
-                                                    : 'bg-slate-200 hover:bg-slate-300 text-slate-700 border border-slate-300';
+                                                    ? 'border border-emerald-500 text-emerald-600 hover:bg-emerald-50' 
+                                                    : 'border border-slate-300 text-slate-400 hover:text-slate-600 hover:bg-slate-50';
 
                                                 $deleteClasses = $isMyBook 
-                                                    ? 'bg-rose-600 hover:bg-rose-500 text-white border border-rose-700' 
-                                                    : 'bg-slate-700 hover:bg-slate-600 text-slate-100 border border-slate-800';
+                                                    ? 'border border-rose-400 text-rose-500 hover:bg-rose-50' 
+                                                    : 'border border-slate-300 text-slate-400 hover:text-rose-600 hover:border-rose-300 hover:bg-rose-50/30';
                                             ?>
                                                 <a href="<?= BASE_URL ?>/index.php?url=book/edit/<?= $book['id'] ?>" 
-                                                   class="<?= $editClasses ?> px-3 py-1.5 rounded font-bold shadow-sm transition-all uppercase tracking-wider text-[10px]">
-                                                    Upravit <?= !$isMyBook ? '<span class="text-[9px] font-normal lowercase opacity-75">(cizí)</span>' : '' ?>
+                                                   class="<?= $editClasses ?> px-2 py-1 rounded text-[11px] font-semibold transition-all tracking-wide">
+                                                    Upravit <?= !$isMyBook ? '<span class="text-[9px] font-normal opacity-70">(cizí)</span>' : '' ?>
                                                 </a>
                                                 
                                                 <a href="<?= BASE_URL ?>/index.php?url=book/delete/<?= $book['id'] ?>" 
                                                    onclick="return confirm('Opravdu chcete tuto knihu smazat?')" 
-                                                   class="<?= $deleteClasses ?> px-3 py-1.5 rounded font-bold shadow-sm transition-all uppercase tracking-wider text-[10px]">
+                                                   class="<?= $deleteClasses ?> px-2 py-1 rounded text-[11px] font-semibold transition-all tracking-wide">
                                                     Smazat
                                                 </a>
                                             <?php endif; ?>
