@@ -81,7 +81,11 @@
                             <div class="space-y-6">
                                 <?php if (!empty($comments)): ?>
                                     <?php foreach ($comments as $comment): ?>
-                                        <div class="bg-black/40 p-6 border-l-4 border-zinc-800 relative group transform transition-all hover:border-lime-500/50">
+                                        <?php 
+                                            $isAuthor = (isset($_SESSION['user_id']) && $comment['user_id'] === $_SESSION['user_id']);
+                                            $isAdmin = (isset($currentUserRole) && $currentUserRole === 'admin');
+                                        ?>
+                                        <div class="bg-black/40 p-6 border-l-4 border-zinc-800 relative group transform transition-all hover:border-lime-500/50" id="comment-box-<?= $comment['id'] ?>">
                                             <div class="flex justify-between items-start mb-2">
                                                 <span class="text-lime-500 font-black uppercase italic text-xs tracking-widest">
                                                     <?= htmlspecialchars($comment['nickname'] ?: $comment['username']) ?>
@@ -90,17 +94,36 @@
                                                     <?= date('d. m. Y H:i', strtotime($comment['created_at'])) ?>
                                                 </span>
                                             </div>
-                                            <p class="text-zinc-400 italic text-sm leading-relaxed">
+                                            
+                                            <p class="text-zinc-400 italic text-sm leading-relaxed" id="comment-text-<?= $comment['id'] ?>">
                                                 <?= nl2br(htmlspecialchars($comment['content'])) ?>
                                             </p>
 
-                                            <?php if (isset($currentUserRole) && $currentUserRole === 'admin'): ?>
-                                                <a href="<?= BASE_URL ?>/index.php?url=comment/delete/<?= $comment['id'] ?>" 
-                                                   onclick="return confirm('OPRAVDU SMAZAT TENTO KOMENTÁŘ?')"
-                                                   class="absolute top-2 right-2 text-red-600 opacity-0 group-hover:opacity-100 transition-opacity text-[9px] font-black uppercase italic border border-red-900/30 px-2 py-1 bg-black">
-                                                   Smazat
-                                                </a>
+                                            <?php if ($isAuthor): ?>
+                                                <form action="<?= BASE_URL ?>/index.php?url=comment/update/<?= $comment['id'] ?>" method="post" id="comment-form-<?= $comment['id'] ?>" class="hidden mt-2">
+                                                    <textarea name="content" required class="w-full bg-black border border-zinc-700 focus:border-lime-500 p-3 text-white text-sm outline-none transition-all italic transform -skew-x-1"><?= htmlspecialchars($comment['content']) ?></textarea>
+                                                    <div class="flex space-x-2 mt-2">
+                                                        <button type="button" onclick="toggleEdit(<?= $comment['id'] ?>)" class="text-[10px] font-black uppercase border border-zinc-800 px-3 py-1 text-zinc-400 hover:text-white transition-colors">Zrušit</button>
+                                                        <button type="submit" class="text-[10px] font-black uppercase bg-lime-500 px-3 py-1 text-black hover:bg-white transition-colors">Uložit</button>
+                                                    </div>
+                                                </form>
                                             <?php endif; ?>
+
+                                            <div class="absolute top-2 right-2 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity bg-black/80 px-2 py-1 border border-zinc-800/50">
+                                                <?php if ($isAuthor): ?>
+                                                    <button onclick="toggleEdit(<?= $comment['id'] ?>)" class="text-[9px] font-black uppercase text-zinc-400 hover:text-lime-500 transition-colors italic">
+                                                        Upravit
+                                                    </button>
+                                                <?php endif; ?>
+
+                                                <?php if ($isAuthor || $isAdmin): ?>
+                                                    <a href="<?= BASE_URL ?>/index.php?url=comment/delete/<?= $comment['id'] ?>" 
+                                                       onclick="return confirm('OPRAVDU SMAZAT TENTO KOMENTÁŘ?')"
+                                                       class="text-[9px] font-black uppercase text-red-600 hover:text-red-400 transition-colors italic">
+                                                       Smazat
+                                                    </a>
+                                                <?php endif; ?>
+                                            </div>
                                         </div>
                                     <?php endforeach; ?>
                                 <?php else: ?>
@@ -158,5 +181,20 @@
         </div>
     </div>
 </main>
+
+<script>
+function toggleEdit(commentId) {
+    const textElement = document.getElementById('comment-text-' + commentId);
+    const formElement = document.getElementById('comment-form-' + commentId);
+    
+    if (formElement.classList.contains('hidden')) {
+        formElement.classList.remove('hidden');
+        textElement.classList.add('hidden');
+    } else {
+        formElement.classList.add('hidden');
+        textElement.classList.remove('hidden');
+    }
+}
+</script>
 
 <?php require_once '../app/views/layout/footer.php'; ?>
