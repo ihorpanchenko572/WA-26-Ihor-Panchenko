@@ -73,8 +73,19 @@
                             </a>
                         </li>
                         
-                        <li class="hidden lg:block text-zinc-500 border-l border-zinc-800 pl-6 lowercase not-italic tracking-normal font-normal">
-                            bojovník: 
+                        <?php 
+                            $isHeaderAdmin = (isset($currentUserRole) && $currentUserRole === 'admin');
+                        ?>
+                        <li class="hidden lg:inline-flex items-center text-zinc-500 border-l border-zinc-800 pl-6 lowercase not-italic tracking-normal font-normal <?= $isHeaderAdmin ? 'text-red-500/80' : 'text-zinc-500' ?>">
+                            <?php if ($isHeaderAdmin): ?>
+                                <span class="bg-red-600 text-white font-black uppercase italic tracking-widest text-[9px] border border-red-900 px-2 py-0.5 mr-2 rounded-sm shadow-[0_0_10px_rgba(220,38,38,0.3)] not-italic tracking-normal normal-case animate-pulse">
+                                    ADMIN
+                                </span> 
+                                velitel:
+                            <?php else: ?>
+                                bojovník:
+                            <?php endif; ?>
+                            
                             <a href="<?= BASE_URL ?>/index.php?url=user/profile" class="text-lime-500 hover:text-white font-black uppercase italic tracking-tighter ml-1 transition-colors">
                                 <?= htmlspecialchars($_SESSION['user_name']) ?>
                             </a>
