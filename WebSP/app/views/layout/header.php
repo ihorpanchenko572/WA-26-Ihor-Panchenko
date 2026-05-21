@@ -74,13 +74,9 @@
                         </li>
                         
                         <?php 
-                            $isHeaderAdmin = (
-                                (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') || 
-                                (isset($_SESSION['is_admin']) && ($_SESSION['is_admin'] == 1 || $_SESSION['is_admin'] === 'admin')) ||
-                                (isset($currentUserRole) && $currentUserRole === 'admin')
-                            );
+                            $isHeaderAdmin = (isset($currentUserRole) && $currentUserRole === 'admin');
                         ?>
-                        <li class="hidden lg:inline-flex items-center border-l border-zinc-800 pl-6 lowercase not-italic tracking-normal font-normal <?= $isHeaderAdmin ? 'text-red-500/80' : 'text-zinc-500' ?>">
+                        <li class="hidden lg:inline-flex items-center text-zinc-500 border-l border-zinc-800 pl-6 lowercase not-italic tracking-normal font-normal <?= $isHeaderAdmin ? 'text-red-500/80' : 'text-zinc-500' ?>">
                             <?php if ($isHeaderAdmin): ?>
                                 <span class="bg-red-600 text-white font-black uppercase italic tracking-widest text-[9px] border border-red-900 px-2 py-0.5 mr-2 rounded-sm shadow-[0_0_10px_rgba(220,38,38,0.3)] not-italic tracking-normal normal-case animate-pulse">
                                     ADMIN
