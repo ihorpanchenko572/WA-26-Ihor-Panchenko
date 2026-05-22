@@ -16,14 +16,13 @@ class Database {
             // Připojení pomocí PDO k iron_log_db
             $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db_name, $this->username, $this->password);
             
-            // Nastavení kódování, aby ti fungovala čeština v názvech cviků
+            // Nastavení kódování, aby fungovala čeština v názvech cviků
             $this->conn->exec("set names utf8mb4");
             
             // Zapnutí vyhazování výjimek při SQL chybách
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
             // Výpis informace o úspěšném připojení (pro testování)
-            // Až ti vše pojede, můžeš tenhle řádek zakomentovat
             echo "NAPOJENO NA ŽELEZO (iron_log_db OK)!<br>";
             
         } catch (PDOException $exception) {
@@ -34,6 +33,6 @@ class Database {
 }
 
 // --- TESTOVACÍ BLOK ---
-// Po spuštění souboru v prohlížeči hned uvidíš, jestli ses trefil do hesla a názvu DB.
+// Po spuštění souboru v prohlížeči hned uvidíme, jestli jsme se trefili do hesla a názvu DB.
 $database = new Database();
 $database->getConnection();

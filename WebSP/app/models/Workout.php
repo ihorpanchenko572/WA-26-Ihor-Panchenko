@@ -80,9 +80,7 @@ public function getAll($muscleGroupId = null) {
         ]);
     }
 
-    /**
-     * Aktualizace existujícího tréninku (TATO METODA TI CHYBĚLA)
-     */
+    
     /**
      * Aktualizace existujícího tréninku (UPRAVENO O UPDATED_BY)
      */

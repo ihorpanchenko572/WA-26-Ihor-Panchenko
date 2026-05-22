@@ -80,7 +80,7 @@ public function index() {
     require_once '../app/views/workouts/workout_show.php';
 }
 
-    // 3. FORMULÁŘ PRO NOVÝ ZÁPIS
+   
    // 3. FORMULÁŘ PRO NOVÝ ZÁPIS (UPRAVENO PRO SVALOVÉ SKUPINY)
     public function create() {
         // 1. Kontrola přihlášení
@@ -92,7 +92,7 @@ public function index() {
 
         // 2. Načtení potřebných modelů
         require_once '../app/models/Database.php';
-        require_once '../app/models/MuscleGroup.php'; // Tvůj nový model
+        require_once '../app/models/MuscleGroup.php'; // nový model
 
         $database = new Database();
         $db = $database->getConnection();
@@ -150,7 +150,7 @@ public function index() {
         }
     }
 
-    // 5. FORMULÁŘ PRO EDITACI
+    
     // 5. FORMULÁŘ PRO EDITACI (UPRAVENO PRO SVALOVÉ SKUPINY)
     public function edit($id = null) {
     if (!isset($_SESSION['user_id'])) {
@@ -168,7 +168,7 @@ public function index() {
     require_once '../app/models/Database.php';
     require_once '../app/models/Workout.php';
     require_once '../app/models/MuscleGroup.php';
-    require_once '../app/models/User.php'; // PŘIDÁNO: Potřebujeme zjistit roli
+    require_once '../app/models/User.php'; // Potřebujeme zjistit roli
 
     $database = new Database();
     $db = $database->getConnection();
@@ -199,7 +199,7 @@ public function index() {
 
     require_once '../app/views/workouts/workout_edit.php';
 }
-    // 6. AKTUALIZACE STÁVAJÍCÍHO ZÁZNAMU
+    
     // 6. AKTUALIZACE STÁVAJÍCÍHO ZÁZNAMU
     public function update($id = null) {
         if (!$id) {
@@ -285,7 +285,7 @@ public function index() {
 
     require_once '../app/models/Database.php';
     require_once '../app/models/Workout.php';
-    require_once '../app/models/User.php'; // PŘIDÁNO: Potřebujeme zjistit roli
+    require_once '../app/models/User.php'; // Potřebujeme zjistit roli
 
     $database = new Database();
     $db = $database->getConnection();
