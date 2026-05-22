@@ -1,8 +1,8 @@
 <?php
-// 1. Nastartování session – bez toho nebudou fungovat tvoje limetkové hlášky o úspěchu
+// 1. Nastartování session – bez toho nebudou fungovat limetkové hlášky o úspěchu
 session_start();
 
-// 2. Ladění chyb – nepostradatelné při vývoji (ukáže ti to "střeva" chyby, když něco klekne)
+// 2. Ladění chyb – nepostradatelné při vývoji (ukáže to "střeva" chyby, když něco klekne)
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
