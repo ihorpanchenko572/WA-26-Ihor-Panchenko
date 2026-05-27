@@ -40,11 +40,11 @@
             datasets: [{
                 label: 'Celkem zvednuto (KG)',
                 data: chartData,
-                borderColor: '#84cc16', // Limetkově zelená (Tailwind lime-500)
+                borderColor: '#cc1616', // Limetkově zelená (Tailwind lime-500)
                 backgroundColor: 'rgba(132, 204, 22, 0.1)', // Jemný limetkový podbarvený nádech
                 borderWidth: 4,
                 pointBackgroundColor: '#fff',
-                pointBorderColor: '#84cc16',
+                pointBorderColor: '#cc1616',
                 pointRadius: 5,
                 pointHoverRadius: 8,
                 tension: 0.3 // Mírné zakřivení linie (aby to nebylo ostré jako pila)
