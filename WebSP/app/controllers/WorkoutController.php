@@ -15,9 +15,15 @@ public function index() {
     // 1. Zjistíme, jestli uživatel kliknul na nějaký filtr v URL (např. &muscle_group_id=3)
     $selectedMuscleGroup = isset($_GET['muscle_group_id']) ? (int)$_GET['muscle_group_id'] : null;
 
-    // 2. Načteme tréninky (pokud je vybraný filtr, getAll ho aplikuje podle ID)
+    // 2. Vyhledávací dotaz podle názvu cvičení
+    $searchQuery = isset($_GET['search']) ? trim($_GET['search']) : null;
+    if ($searchQuery === '') {
+        $searchQuery = null;
+    }
+
+    // 3. Načteme tréninky (pokud je vybraný filtr nebo vyhledávání, getAll ho aplikuje)
     $workoutModel = new Workout($db);
-    $workouts = $workoutModel->getAll($selectedMuscleGroup); 
+    $workouts = $workoutModel->getAll($selectedMuscleGroup, $searchQuery);
 
     // 3. Načteme všechny svalové skupiny z DB pro vykreslení tlačítek filtru
     $mgModel = new MuscleGroup($db);

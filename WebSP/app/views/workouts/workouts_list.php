@@ -13,6 +13,25 @@
         </div>
     </div>
 
+    <form method="GET" action="<?= BASE_URL ?>/index.php" class="mb-6 flex gap-0 transform -skew-x-2">
+        <input type="hidden" name="url" value="workout/index">
+        <input
+            type="text"
+            name="search"
+            value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
+            placeholder="Hledat cvičení..."
+            class="flex-grow bg-zinc-950 border border-zinc-800 text-white placeholder-zinc-600 px-5 py-3 text-sm font-bold uppercase tracking-wider focus:outline-none focus:border-lime-500 transition-colors"
+        >
+        <button type="submit" class="bg-lime-500 text-black px-6 py-3 text-xs font-black uppercase italic tracking-widest hover:bg-white transition-colors">
+            Hledat
+        </button>
+        <?php if (!empty($_GET['search'])): ?>
+            <a href="<?= BASE_URL ?>/index.php" class="bg-zinc-800 text-zinc-400 px-4 py-3 text-xs font-black uppercase italic tracking-widest hover:text-white transition-colors flex items-center">
+                ✕
+            </a>
+        <?php endif; ?>
+    </form>
+
     <div class="mb-10 bg-zinc-950 p-4 border border-zinc-900 flex flex-wrap gap-3 items-center transform -skew-x-2">
         <span class="text-[10px] font-black uppercase tracking-widest text-zinc-600 mr-2 italic">Filtr arény:</span>
         
@@ -37,8 +56,13 @@
 
     <?php if (empty($workouts)): ?>
         <div class="border-2 border-dashed border-zinc-800 p-20 text-center">
-            <p class="text-zinc-500 uppercase tracking-widest font-bold mb-4">Zatím jsi nic nezvedl, nebo žádný výkon neodpovídá filtru!</p>
-            <a href="<?= BASE_URL ?>/index.php?url=workout/create" class="text-lime-500 font-black border-b-2 border-lime-500 pb-1 hover:text-white hover:border-white transition-all">ZAPSAT NOVÝ TRÉNINK</a>
+            <?php if (!empty($_GET['search'])): ?>
+                <p class="text-zinc-500 uppercase tracking-widest font-bold mb-4">Žádné cvičení nenalezeno pro: „<?= htmlspecialchars($_GET['search']) ?>"</p>
+                <a href="<?= BASE_URL ?>/index.php" class="text-lime-500 font-black border-b-2 border-lime-500 pb-1 hover:text-white hover:border-white transition-all">ZOBRAZIT VŠE</a>
+            <?php else: ?>
+                <p class="text-zinc-500 uppercase tracking-widest font-bold mb-4">Zatím jsi nic nezvedl, nebo žádný výkon neodpovídá filtru!</p>
+                <a href="<?= BASE_URL ?>/index.php?url=workout/create" class="text-lime-500 font-black border-b-2 border-lime-500 pb-1 hover:text-white hover:border-white transition-all">ZAPSAT NOVÝ TRÉNINK</a>
+            <?php endif; ?>
         </div>
     <?php else: ?>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
